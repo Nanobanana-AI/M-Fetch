@@ -57,7 +57,7 @@ Please visit the **[Releases](../../releases)** page to download the latest `.zi
 
 * 🖥️ **OS Compatibility / 系统支持**: Windows 10 / Windows 11 (64-bit only / 仅限 64 位).
 * 📦 **Note / 说明**: The package includes a streamlined version of FFmpeg for video merging. Ready to use out of the box. *<br>
-(压缩包内已内置精简版 FFmpeg 引擎，纯绿色免安装，解压即用。)*<br>
+(压缩包内已内置 FFmpeg 引擎，纯绿色免安装，解压即用。)*<br>
 
 > **Official Mirror / 官方高速分发网盘:**<br>
 > [https://okqiyi.com/m-fetch/](https://okqiyi.com/m-fetch/)
