@@ -57,6 +57,12 @@ Please visit the **[Releases](../../releases)** page to download the latest `.ra
 
 > **Official Mirror / 官方高速分发网盘:**
 > [https://okqiyi.com/m-fetch/](https://okqiyi.com/m-fetch/)
+>
+## ☕ Support & Donate (赞赏与支持)
+If you find M-Fetch helpful and it saves your precious time, consider buying me a coffee! Your support keeps this project alive and ad-free.
+如果 M-Fetch 为你节省了宝贵的时间，欢迎请开发者喝杯咖啡！你的支持是我持续维护、坚持用爱发电的最大动力。
+
+<img src="donate.png" width="200" alt="Donate QR Code">
 
 ## ⚠️ Disclaimer (免责声明)
 This tool is for educational, local network testing, and personal backup purposes only. Do not use this software for any illegal activities or copyright infringement. The developer bears no legal responsibility for user actions.
