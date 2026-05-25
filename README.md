@@ -29,17 +29,22 @@
 👉 **[访问官方中文主页获取详细指南与网盘通道](https://okqiyi.com/m-fetch/)**
 
 ## ✨ Core Features (核心特性)
-- 📦 **Portable & Clean (绿色免安装)**: Unzip and run. No registry writing, no background services. Auto-cleans log files. (单文件启动，绝无全家桶，内置开机自洁净机制)
-- 📋 **Smart Clipboard Monitor (剪贴板智能捕获)**: Automatically detects `.m3u8` links from your clipboard and gets ready instantly. (后台无感监听，复制链接瞬间就绪)
-- 🚀 **Multi-Threading (多线程满速)**: Concurrently downloads video segments and merges them automatically using built-in FFmpeg. (支持多线程高并发拉取切片，后台毫秒级压制合并)
-- 🌐 **Dynamic System Proxy (原生全局代理)**: Auto-detects system proxy (e.g., Clash, v2ray) to bypass regional restrictions, perfect for sites like X/Twitter. (动态探测系统底层代理，无缝穿透海外复杂流媒体源)
-- 🎬 **Auto-Best Quality (智能多画质绝杀)**: Automatically selects the highest video and audio quality from complex master playlists. (自动盲选最高画质，无需控制台手动交互)
+- 📦 **Portable & Clean (绿色免安装)**: Unzip and run. No registry writing, no background services. Auto-cleans log files.<br>
+(单文件启动，绝无全家桶，内置开机自洁净机制)<br>
+- 📋 **Smart Clipboard Monitor (剪贴板智能捕获)**: Automatically detects `.m3u8` links from your clipboard and gets ready instantly.<br>
+(后台无感监听，复制链接瞬间就绪)<br>
+- 🚀 **Multi-Threading (多线程满速)**: Concurrently downloads video segments and merges them automatically using built-in FFmpeg. <br>
+(支持多线程高并发拉取切片，后台毫秒级压制合并)<br>
+- 🌐 **Dynamic System Proxy (原生全局代理)**: Auto-detects system proxy (e.g., Clash, v2ray) to bypass regional restrictions, perfect for sites like X/Twitter.<br>
+(动态探测系统底层代理，无缝穿透海外复杂流媒体源)<br>
+- 🎬 **Auto-Best Quality (智能多画质绝杀)**: Automatically selects the highest video and audio quality from complex master playlists. <br>
+(自动盲选最高画质，无需控制台手动交互)<br>
 
 ## 🚀 Quick Start (快速开始)
 The best workflow for M-Fetch is hiding it in the background:
 M-Fetch 最完美的工作流是让它安静地隐匿在后台运行：
 
-1. **Sniff / 嗅探**: Use browser extensions like **Cat Catch (猫爪)** to sniff the target `.m3u8` link. >/<br>
+1. **Sniff / 嗅探**: Use browser extensions like **Cat Catch (猫爪)** to sniff the target `.m3u8` link. <br>
    *(配合 Chrome 浏览器的 **猫爪** 等流媒体嗅探插件，在网页端抓取目标链接。)*<br>
 2. **Copy / 复制**: Click copy on the link. <br>
    *(直接在网页端点击复制该链接。)*<br>
