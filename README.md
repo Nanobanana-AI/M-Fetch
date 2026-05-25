@@ -39,12 +39,12 @@
 The best workflow for M-Fetch is hiding it in the background:
 M-Fetch 最完美的工作流是让它安静地隐匿在后台运行：
 
-1. **Sniff / 嗅探**: Use browser extensions like **Cat Catch (猫爪)** to sniff the target `.m3u8` link. 
-   *(配合 Chrome 浏览器的 **猫爪** 等流媒体嗅探插件，在网页端抓取目标链接。)*
-2. **Copy / 复制**: Click copy on the link. 
-   *(直接在网页端点击复制该链接。)*
-3. **Auto-Run / 全自动运行**: M-Fetch captures it automatically. If "Auto-start" is checked, it downloads, decrypts, and merges into an `.mp4` file silently. 
-   *(M-Fetch 会在后台瞬间自动捕获。如果勾选了“自动开始”，它将全静默完成多线程抓取、解密并最终合并为 `.mp4` 视频文件。)*
+1. **Sniff / 嗅探**: Use browser extensions like **Cat Catch (猫爪)** to sniff the target `.m3u8` link. >/<br>
+   *(配合 Chrome 浏览器的 **猫爪** 等流媒体嗅探插件，在网页端抓取目标链接。)*<br>
+2. **Copy / 复制**: Click copy on the link. <br>
+   *(直接在网页端点击复制该链接。)*<br>
+3. **Auto-Run / 全自动运行**: M-Fetch captures it automatically. If "Auto-start" is checked, it downloads, decrypts, and merges into an `.mp4` file silently. <br>
+   *(M-Fetch 会在后台瞬间自动捕获。如果勾选了“自动开始”，它将全静默完成多线程抓取、解密并最终合并为 `.mp4` 视频文件。)*<br>
 
 ## 📥 Download (下载使用)
 Please visit the **[Releases](../../releases)** page to download the latest `.rar` or `.zip` package. 
