@@ -69,7 +69,7 @@ If M-Fetch saved your precious time, consider buying me a coffee! Your support k
 <div align="center">
   <img src="donate.png" width="200" alt="WeChat Donate">
   <br>
-  <b><a href="https://paypal.me/Okqiyi" target="_blank">☕ Donate via PayPal</a></b>
+  [![Donate via PayPal](https://img.shields.io/badge/Donate-PayPal-blue.svg?logo=paypal&style=for-the-badge)](https://paypal.me/Okqiyi)</b>
 </div>
 
 ## ⚠️ Disclaimer (免责声明)
