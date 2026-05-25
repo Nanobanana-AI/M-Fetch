@@ -16,7 +16,12 @@
 这是一款为追求极致效率而生的下载利器。无弹窗、不套壳、免安装。基于强大的开源多线程内核构建，专注于 M3U8 和主流流媒体的高速无感下载。
 
 
-https://github.com/user-attachments/assets/b1f3f233-5748-45e2-9c05-5a43da935621
+
+https://github.com/user-attachments/assets/fb4b1a3f-332b-4387-8637-2dfedb944edd
+
+
+
+
 
 
 
