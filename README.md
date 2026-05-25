@@ -59,8 +59,8 @@ Please visit the **[Releases](../../releases)** page to download the latest `.ra
 > [https://okqiyi.com/m-fetch/](https://okqiyi.com/m-fetch/)
 >
 ## ☕ Support & Donate (赞赏与支持)
-If you find M-Fetch helpful and it saves your precious time, consider buying me a coffee! Your support keeps this project alive and ad-free.
-如果 M-Fetch 为你节省了宝贵的时间，欢迎请开发者喝杯咖啡！你的支持是我持续维护、坚持用爱发电的最大动力。
+If you find M-Fetch helpful and it saves your precious time, consider buying me a coffee! Your support keeps this project alive and ad-free.<br>
+如果 M-Fetch 为你节省了宝贵的时间，欢迎请开发者喝杯咖啡！你的支持是我持续维护、坚持用爱发电的最大动力。<br>
 
 <img src="donate.png" width="200" alt="Donate QR Code">
 
