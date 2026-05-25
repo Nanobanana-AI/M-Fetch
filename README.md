@@ -1,2 +1,43 @@
-# M-Fetch
-A minimalist, high-performance M3U8 &amp; streaming video downloader. 极简、纯粹、无感的 M3U8 视频下载利器。
+<div align="center">
+  <h1>⚡ M-Fetch V1.0</h1>
+  <p><b>The Ultimate Minimalist M3U8 & Streaming Downloader</b></p>
+  <p>全网最纯粹的极简 M3U8 下载器</p>
+  
+  [![Official Website](https://img.shields.io/badge/Official_Website-007EC6?style=for-the-badge&logo=googlechrome&logoColor=white)](https://okqiyi.com/m-fetch/)
+  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+  [![Python](https://img.shields.io/badge/Python-3.x-blue?style=for-the-badge&logo=python)](https://www.python.org/)
+</div>
+
+---
+
+## 📖 Introduction (简介)
+**M-Fetch** is a pure, ad-free, and portable GUI downloader built for the powerful `N_m3u8DL-RE` core. It focuses on efficiency, completely abandoning the bloated features and annoying ads found in traditional downloaders.
+
+这是一款为追求极致效率而生的下载利器。无弹窗、不套壳、免安装。基于强大的开源多线程内核构建，专注于 M3U8 和主流流媒体的高速无感下载。
+
+👉 **[访问官方中文主页获取详细指南与网盘通道](https://okqiyi.com/m-fetch/)**
+
+## ✨ Core Features (核心特性)
+- 📦 **Portable & Clean (绿色免安装)**: Unzip and run. No registry writing, no background services. Auto-cleans log files. (单文件启动，绝无全家桶，内置开机自洁净机制)
+- 📋 **Smart Clipboard Monitor (剪贴板智能捕获)**: Automatically detects `.m3u8` links from your clipboard and gets ready instantly. (后台无感监听，复制链接瞬间就绪)
+- 🚀 **Multi-Threading (多线程满速)**: Concurrently downloads video segments and merges them automatically using built-in FFmpeg. (支持多线程高并发拉取切片，后台毫秒级压制合并)
+- 🌐 **Dynamic System Proxy (原生全局代理)**: Auto-detects system proxy (e.g., Clash, v2ray) to bypass regional restrictions, perfect for sites like X/Twitter. (动态探测系统底层代理，无缝穿透海外复杂流媒体源)
+- 🎬 **Auto-Best Quality (智能多画质绝杀)**: Automatically selects the highest video and audio quality from complex master playlists. (自动盲选最高画质，无需控制台手动交互)
+
+## 🚀 Quick Start (快速开始)
+The best workflow for M-Fetch is hiding it in the background:
+1. **Sniff**: Use browser extensions like **Cat Catch (猫爪)** to sniff the target `.m3u8` link.
+2. **Copy**: Click copy on the link.
+3. **Auto-Run**: M-Fetch captures it automatically. If "Auto-start" is checked, it downloads, decrypts, and merges into an `.mp4` file silently.
+
+## 📥 Download (下载使用)
+Please visit the **[Releases](../../releases)** page to download the latest `.rar` or `.zip` package. 
+*Note: The package includes a streamlined version of FFmpeg for video merging.*
+
+> **Official Mirror / 官方高速分发网盘:**
+> [https://okqiyi.com/m-fetch/](https://okqiyi.com/m-fetch/)
+
+## ⚠️ Disclaimer (免责声明)
+This tool is for educational, local network testing, and personal backup purposes only. Do not use this software for any illegal activities or copyright infringement. The developer bears no legal responsibility for user actions.
+
+本软件为纯粹的个人辅助效率工具。请勿将本软件用于任何侵犯他人版权、非法窃取商业加密流媒体等违法违规行为。由用户个人下载行为引起的一切版权纠纷与法律责任，均由使用者本人承担。
