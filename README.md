@@ -63,7 +63,7 @@ Please visit the **[Releases](../../releases)** page to download the latest `.zi
 > [https://okqiyi.com/m-fetch/](https://okqiyi.com/m-fetch/)
 >
 ## ☕ Support & Donate (赞赏与支持)
-If M-Fetch saved your precious time, consider buying me a coffee! Your support keeps this project alive and ad-free.
+If M-Fetch saved your precious time, consider buying me a coffee! Your support keeps this project alive and ad-free.<br>
 如果 M-Fetch 为你节省了宝贵的时间，欢迎请开发者喝杯咖啡！你的支持是我坚持用爱发电的最大动力。
 
 <div align="center">
