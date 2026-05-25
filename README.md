@@ -52,10 +52,14 @@ M-Fetch 最完美的工作流是让它安静地隐匿在后台运行：
    *(M-Fetch 会在后台瞬间自动捕获。如果勾选了“自动开始”，它将全静默完成多线程抓取、解密并最终合并为 `.mp4` 视频文件。)*<br>
 
 ## 📥 Download (下载使用)
-Please visit the **[Releases](../../releases)** page to download the latest `.rar` or `.zip` package. 
-*Note: The package includes a streamlined version of FFmpeg for video merging.*
+Please visit the **[Releases](../../releases)** page to download the latest `.zip` package. <br>
+*(请前往 Releases 页面下载最新版本的压缩包。)*<br>
 
-> **Official Mirror / 官方高速分发网盘:**
+* 🖥️ **OS Compatibility / 系统支持**: Windows 10 / Windows 11 (64-bit only / 仅限 64 位).
+* 📦 **Note / 说明**: The package includes a streamlined version of FFmpeg for video merging. Ready to use out of the box. *<br>
+(压缩包内已内置精简版 FFmpeg 引擎，纯绿色免安装，解压即用。)*<br>
+
+> **Official Mirror / 官方高速分发网盘:**<br>
 > [https://okqiyi.com/m-fetch/](https://okqiyi.com/m-fetch/)
 >
 ## ☕ Support & Donate (赞赏与支持)
