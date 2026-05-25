@@ -67,11 +67,13 @@ If M-Fetch saved your precious time, consider buying me a coffee! Your support k
 如果 M-Fetch 为你节省了宝贵的时间，欢迎请开发者喝杯咖啡！你的支持是我坚持用爱发电的最大动力。
 
 <div align="center">
-  <img src="donate.png" width="200" alt="WeChat Donate">
-  <br>
- <a href="https://paypal.me/Okqiyi" target="_blank">
-  <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg" alt="PayPal" width="80">
-</a>
+  <img src="donate.png" width="180" alt="WeChat Donate">
+  
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  
+  <a href="https://paypal.me/Okqiyi" target="_blank">
+    <img src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-large.png" width="160" alt="Check out with PayPal">
+  </a>
 </div>
 
 ## ⚠️ Disclaimer (免责声明)
