@@ -15,7 +15,8 @@
 
 这是一款为追求极致效率而生的下载利器。无弹窗、不套壳、免安装。基于强大的开源多线程内核构建，专注于 M3U8 和主流流媒体的高速无感下载。
 
-<img width="622" height="532" alt="M-Fetch-1" src="https://github.com/user-attachments/assets/47d9b1ab-0c8e-480c-a878-5363c831165b" />
+<img width="622" height="532" alt="M-Fetch-1" src="https://github.com/user-attachments/assets/055f5910-3883-4fc6-9756-13f8b62bd740" />
+
 
 
 <img width="1920" height="1080" alt="M-Fetch" src="https://github.com/user-attachments/assets/fc0ba9d3-689e-4c80-bbd2-2bcad41f4e80" />
