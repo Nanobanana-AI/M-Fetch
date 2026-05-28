@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>⚡ M-Fetch V1.0.0 </h1>
+  <h1>⚡ M-Fetch  </h1>
   <p><b>The Ultimate Minimalist M3U8 & Streaming Downloader</b></p>
   <p>全网最纯粹的极简 M3U8 下载器</p>
   
