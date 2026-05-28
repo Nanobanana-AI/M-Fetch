@@ -8,7 +8,7 @@
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
   [![Python](https://img.shields.io/badge/Python-3.x-blue?style=for-the-badge&logo=python)](https://www.python.org/)
 </div>
----
+
 
 ## 📖 Introduction (简介)
 **M-Fetch** is a pure, ad-free, and portable GUI downloader built for the powerful `N_m3u8DL-RE` core. It focuses on efficiency, completely abandoning the bloated features and annoying ads found in traditional downloaders.
