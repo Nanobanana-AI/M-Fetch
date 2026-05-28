@@ -1,13 +1,13 @@
 <div align="center">
-  <h1>⚡ M-Fetch  </h1>
+  <h1>⚡ M-Fetch</h1>
   <p><b>The Ultimate Minimalist M3U8 & Streaming Downloader</b></p>
   <p>全网最纯粹的极简 M3U8 下载器</p>
   
+  [![GitHub Release](https://img.shields.io/github/v/release/Nanobanana-AI/M-Fetch?style=for-the-badge&logo=github)](https://github.com/Nanobanana-AI/M-Fetch/releases)
   [![Official Website](https://img.shields.io/badge/Official_Website-007EC6?style=for-the-badge&logo=googlechrome&logoColor=white)](https://okqiyi.com/m-fetch/)
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
   [![Python](https://img.shields.io/badge/Python-3.x-blue?style=for-the-badge&logo=python)](https://www.python.org/)
 </div>
-
 ---
 
 ## 📖 Introduction (简介)
