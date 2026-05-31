@@ -113,8 +113,8 @@ This tool is for educational, local network testing, and personal backup purpose
 ```json
 {
     "特征词或域名片段": {
-        "Origin": "[https://www.真实的网页地址.com](https://www.真实的网页地址.com)",
-        "Referer": "[https://www.真实的网页地址.com/](https://www.真实的网页地址.com/)"
+        "Origin": "https://www.真实的网页地址.com",
+        "Referer": "https://www.真实的网页地址.com/"
     }
 }
 
