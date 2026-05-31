@@ -106,7 +106,7 @@ This tool is for educational, local network testing, and personal backup purpose
 
 ---
 
-### 💡 `rules.json` 专属外挂使用指南
+### 💡 `rules.json` 专属规则使用指南
 如果您经常下载某些配置了严苛 CDN 防盗链的特定平台视频，可在 `M-Fetch.exe` 同级目录下自行新建 `rules.json` 文件。软件会自动识别匹配特征词，并悄悄为您穿上伪装服。
 
 **格式示例：**
