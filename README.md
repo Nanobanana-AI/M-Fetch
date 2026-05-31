@@ -58,14 +58,16 @@ Please visit the **[Releases](../../releases)** page to download the latest `.zi
 
 * 🖥️ **OS Compatibility / 系统支持**: Windows 10 / Windows 11 (64-bit only / 仅限 64 位).
 * 📦 **Note / 说明**: The package includes a streamlined version of FFmpeg for video merging. Ready to use out of the box. *<br>
-(压缩包内已内置 FFmpeg 引擎，纯绿色免安装，解压即用。)*<br>
+(压缩包内已内置 FFmpeg 引擎，纯绿色免安装，解压即用。)<br>
 
 > **Official Mirror / 官方高速分发网盘:**<br>
 > [https://okqiyi.com/m-fetch/](https://okqiyi.com/m-fetch/)
 >
 ## ☕ Support & Donate (赞赏与支持)
-If M-Fetch saved your precious time, consider buying me a coffee! Your support keeps this project alive and ad-free.<br>
-如果 M-Fetch 为你节省了宝贵的时间，欢迎请开发者喝杯咖啡！你的支持是我坚持用爱发电的最大动力。
+
+If M-Fetch saved your precious time, consider buying me a coffee, or simply leave a **Star ⭐️** on this repository! Your support keeps this project alive and ad-free.<br>
+如果 M-Fetch 为你节省了宝贵的时间，欢迎请开发者喝杯咖啡，或者为这个项目**点亮一颗 Star ⭐️**！<br>
+你的支持和认可是我坚持用爱发电的最大动力。<br>
 
 <div align="center">
   <table style="border: none; background-color: transparent;">
