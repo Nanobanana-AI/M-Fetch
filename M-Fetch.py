@@ -697,33 +697,50 @@ class M3U8TaskApp:
             
          
     def task_finished(self, task_id, filename, save_dir, is_success):
-        """任务结束状态分发器"""
+        """任务结束状态分发器 (引入终极物理验货机制，拒绝假成功)"""
         try:
             if self.tree_dl.exists(task_id):
                 self.tree_dl.delete(task_id) # 从下载队列移除
         except: pass
 
-        if is_success:
-            # 尝试计算真实文件大小
-            final_size = "未知"
-            target_file = os.path.join(save_dir, f"{filename}.mp4")
-            if os.path.exists(target_file):
-                size_mb = os.path.getsize(target_file) / (1024 * 1024)
-                final_size = f"{size_mb:.2f} MB"
+        # ==========================================
+        # 核心修复：物理验货逻辑 (Physical File Verification)
+        # 即使底层报告成功，也要亲自去硬盘上确认目标文件是否存在
+        # ==========================================
+        actual_success = is_success
+        final_size = "未知"
+        
+        if actual_success:
+            # 1. 如果用户【没有】勾选不合并 -> 必须得有完整的 .mp4 才能算真成功
+            if not self.config.get("skip_merge"):
+                target_file = os.path.join(save_dir, f"{filename}.mp4")
+                if os.path.exists(target_file):
+                    size_mb = os.path.getsize(target_file) / (1024 * 1024)
+                    final_size = f"{size_mb:.2f} MB"
+                else:
+                    actual_success = False # 假成功被识破，打回失败！
+                    
+            # 2. 如果用户【勾选了】不合并 -> 只要同名缓存文件夹存在且有内容就算成功
+            else:
+                target_folder = os.path.join(save_dir, filename)
+                if os.path.exists(target_folder):
+                    final_size = "分片已保留"
+                else:
+                    actual_success = False
 
+        # --- 根据最终的严苛判定来更新 UI 和 数据库 ---
+        if actual_success:
             # 更新数据库状态 = 2
             self.cursor.execute("UPDATE tasks SET status=2, size=? WHERE id=?", (final_size, task_id))
             self.conn.commit()
-            
             # 添加到完成列表
             self.tree_ok.insert('', 0, iid=task_id, values=(task_id, filename, final_size))
         else:
             # 更新数据库状态 = 3
             self.cursor.execute("UPDATE tasks SET status=3 WHERE id=?", (task_id,))
             self.conn.commit()
-            
-            # 添加到失败列表
-            self.tree_fail.insert('', 0, iid=task_id, values=(task_id, filename, "下载失败"))
+            # 添加到失败列表 (用户可在该列表右键断点续传)
+            self.tree_fail.insert('', 0, iid=task_id, values=(task_id, filename, "校验失败/断流"))
 
     def clear_records(self, status):
         """独立清理指定的视图列表与数据库记录（坚决不删本地实际文件）"""
