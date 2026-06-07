@@ -92,7 +92,7 @@ This tool is for educational, local network testing, and personal backup purpose
 ---
 ## 📝 更新日志 (Changelog)
 
-### 🚀 V1.2.0 - 国际化双语支持与后台潜行模式 | Internationalization & Stealth Background Mode (2026.06.10)
+### 🚀 V1.2.0 - 国际化双语支持与后台潜行模式 | Internationalization & Stealth Background Mode (2026.06.X)
 
 *本次更新将 M-Fetch 从纯粹的下载工具打磨成了无缝融入操作系统的生产力利器，并正式面向全球极客推出双语支持。*
 *This update refines M-Fetch from a pure downloading tool into a productivity weapon that seamlessly integrates into your OS, officially introducing bilingual support for geeks worldwide.*
