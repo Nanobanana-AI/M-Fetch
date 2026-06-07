@@ -124,6 +124,7 @@ This tool is for educational, local network testing, and personal backup purpose
     * **ZH:** 「关于」选项卡新增了可点击的官方主页（okqiyi.com）及 GitHub 源码库超链接；并为海外环境动态隐藏了微信赞赏码，替换为专属的 PayPal 支持通道。
     * **EN:** Added clickable hyperlinks to the official website (okqiyi.com) and GitHub repository in the "About" tab. Dynamically hid the WeChat donation QR code for non-Chinese environments, replacing it with a dedicated PayPal support channel.
 
+---
 
 ### 🚀 V1.1.0 - 批量排队与极客网络引擎升级 | Batch Queuing & Geek-Level Network Engine Upgrade (2026.06.01)
 
