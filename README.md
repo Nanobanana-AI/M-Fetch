@@ -90,56 +90,62 @@ This tool is for educational, local network testing, and personal backup purpose
 本软件为纯粹的个人辅助效率工具。请勿将本软件用于任何侵犯他人版权、非法窃取商业加密流媒体等违法违规行为。由用户个人下载行为引起的一切版权纠纷与法律责任，均由使用者本人承担。
 
 ---
-📝 更新日志 (Changelog)
-🚀 V1.1.0 - 批量排队与极客网络引擎升级 | Batch Queuing & Geek-Level Network Engine Upgrade (2026.06.01)
-本次更新聚焦于重度用户的批量下载体验与底层网络穿透能力，进一步释放 N_m3u8DL-RE 内核的强大潜力。
-This update focuses on the batch download experience for heavy users and underlying network penetration capabilities, further unleashing the immense potential of the N_m3u8DL-RE core.
+## 📝 更新日志 (Changelog)
 
-✨ 核心特性升级 | Core Feature Upgrades
+### 🚀 V1.1.0 - 批量排队与极客网络引擎升级 | Batch Queuing & Geek-Level Network Engine Upgrade (2026.06.01)
 
-智能批量嗅探与排队引擎 | Smart Batch Sniffing & Queuing Engine: * ZH: 全面重构剪贴板监听逻辑，现已支持无视排版、一次性复制多行 M3U8 链接。内置毫秒级“随机错峰（Jitter Delay）”防风控算法，完美模拟真实人类操作，有效规避目标服务器并发拦截。配合新增的「等待队列」与「一键全部开始」功能，追剧批量下载从未如此丝滑。
+*本次更新聚焦于重度用户的批量下载体验与底层网络穿透能力，进一步释放 N_m3u8DL-RE 内核的强大潜力。*
+*This update focuses on the batch download experience for heavy users and underlying network penetration capabilities, further unleashing the immense potential of the N_m3u8DL-RE core.*
 
-EN: Completely refactored the clipboard monitoring logic. Now supports copying multiple M3U8 links at once, regardless of text formatting. The built-in millisecond-level "Jitter Delay" anti-risk algorithm perfectly simulates human operations, effectively bypassing concurrent interception by target servers. Paired with the new "Waiting Queue" and "Start All" features, binge-watching batch downloads has never been smoother.
+---
 
-极客级网络突破（防盗链克星） | Geek-Level Network Breakthrough (Anti-Leech Killer): * 【UI 面板直写 | Direct UI Input】:
-* ZH: 高级设置中新增「自定义 HTTP 请求头」多行输入面板。支持直接粘贴 Referer、Cookie、User-Agent 等网络鉴权参数，轻松攻克常规防盗链。
-* EN: Added a multi-line "Custom HTTP Headers" input panel in Advanced Settings. Directly paste network authentication parameters like Referer, Cookie, and User-Agent to easily bypass standard anti-leech protections.
+#### ✨ 核心特性升级 | Core Feature Upgrades
 
-【专属影子规则库 | Exclusive Shadow Rule Library】:
+* **智能批量嗅探与排队引擎 | Smart Batch Sniffing & Queuing Engine**
+    * **ZH:** 全面重构剪贴板监听逻辑，现已支持**无视排版、一次性复制多行 M3U8 链接**。内置毫秒级“随机错峰（Jitter Delay）”防风控算法，完美模拟真实人类操作，有效规避目标服务器并发拦截。配合新增的「等待队列」与「一键全部开始」功能，追剧批量下载从未如此丝滑。
+    * **EN:** Completely refactored the clipboard monitoring logic. Now supports **copying multiple M3U8 links at once, regardless of text formatting**. The built-in millisecond-level "Jitter Delay" anti-risk algorithm perfectly simulates human operations, effectively bypassing concurrent interception by target servers. Paired with the new "Waiting Queue" and "Start All" features, binge-watching batch downloads has never been smoother.
 
-ZH: 新增 rules.json 外挂支持。无需修改软件源码，只需在软件同级目录放置该文件，即可为不同域名实现自动化的请求头注入（详见下方示例），真正做到“一次配置，永久免配秒下”。
+* **极客级网络突破（防盗链克星） | Geek-Level Network Breakthrough (Anti-Leech Killer)**
+    * **【UI 面板直写 | Direct UI Input】**
+        * **ZH:** 高级设置中新增「自定义 HTTP 请求头」多行输入面板。支持直接粘贴 `Referer`、`Cookie`、`User-Agent` 等网络鉴权参数，轻松攻克常规防盗链。
+        * **EN:** Added a multi-line "Custom HTTP Headers" input panel in Advanced Settings. Directly paste network authentication parameters like `Referer`, `Cookie`, and `User-Agent` to easily bypass standard anti-leech protections.
+    * **【专属影子规则库 | Exclusive Shadow Rule Library】**
+        * **ZH:** 新增 `rules.json` 外挂支持。无需修改软件源码，只需在软件同级目录放置该文件，即可为不同域名实现自动化的请求头注入（详见下方示例），真正做到“一次配置，永久免配秒下”。
+        * **EN:** Added support for an external `rules.json` file. No need to modify source code; simply place this file in the exact same directory as the app to achieve automated header injection for different domains (see example below). Truly "configure once, download instantly forever."
 
-EN: Added support for an external rules.json file. No need to modify source code; simply place this file in the exact same directory as the app to achieve automated header injection for different domains (see example below). Truly "configure once, download instantly forever."
+* **高级文件处理（为二创而生） | Advanced File Handling (Built for Creators)**
+    * **ZH:** 新增「下载后保留原始 TS 分片（不合并 MP4）」选项。针对需要对视频进行无损二次剪辑、处理水印的创作者，直接交付原生切片，大幅节省 CPU 压制时间。
+    * **EN:** Added the option "Keep original TS segments after download (Do not merge to MP4)". For creators who need lossless secondary editing or watermark processing, it delivers native slices directly, drastically saving CPU encoding time.
 
-高级文件处理（为二创而生） | Advanced File Handling (Built for Creators): * ZH: 新增「下载后保留原始 TS 分片（不合并 MP4）」选项。针对需要对视频进行无损二次剪辑、处理水印的创作者，直接交付原生切片，大幅节省 CPU 压制时间。
+---
 
-EN: Added the option "Keep original TS segments after download (Do not merge to MP4)". For creators who need lossless secondary editing or watermark processing, it delivers native slices directly, drastically saving CPU encoding time.
+#### 🛠️ 细节与体验优化 | Tweaks & UX Optimizations
 
-🛠️ 细节与体验优化 | Tweaks & UX Optimizations
+* **终极物理验货机制（拒绝幽灵成功） | Ultimate Physical Verification Mechanism (No More Ghost Successes)**
+    * **ZH:** 针对极限高并发下偶发的目标服务器断流、导致遗留 `.ts.tmp` 残缺分片的边缘 Case，新增硬核文件级物理校验。不再盲信底层进程返回值，只有硬盘中真实生成完整 MP4（或完整保留分片）才判定为成功，否则自动打回失败列表。配合「一键断点续传」可秒补残缺切片并自动合并，彻底终结假死完成漏洞。
+    * **EN:** Addressed the edge case where target server disconnections during extreme high concurrency leave behind incomplete `.ts.tmp` fragments. Added hardcore file-level physical verification. No longer blindly trusting the underlying process's return value: a task is only marked successful if a complete MP4 (or intact segments) is genuinely generated on the hard drive; otherwise, it's sent back to the failed list. Combined with "One-Click Resume", you can instantly patch missing slices and auto-merge, completely ending the "fake success" loophole.
 
-终极物理验货机制（拒绝幽灵成功） | Ultimate Physical Verification Mechanism (No More Ghost Successes): * ZH: 针对极限高并发下偶发的目标服务器断流、导致遗留 .ts.tmp 残缺分片的边缘 Case，新增硬核文件级物理校验。不再盲信底层进程返回值，只有硬盘中真实生成完整 MP4（或完整保留分片）才判定为成功，否则自动打回失败列表。配合「一键断点续传」可秒补残缺切片并自动合并，彻底终结假死完成漏洞。
+* **万能嗅探兜底 | Universal Sniffing Fallback**
+    * **ZH:** 即使不配置任何规则，引擎也会尝试自动提取下载链接的主机名作为 `Referer`，通杀 80% 的中小影视网站防盗链。
+    * **EN:** Even without any rules configured, the engine will attempt to automatically extract the download link's hostname as the `Referer`, neutralizing anti-leech protections on 80% of small-to-medium video sites.
 
-EN: Addressed the edge case where target server disconnections during extreme high concurrency leave behind incomplete .ts.tmp fragments. Added hardcore file-level physical verification. No longer blindly trusting the underlying process's return value: a task is only marked successful if a complete MP4 (or intact segments) is genuinely generated on the hard drive; otherwise, it's sent back to the failed list. Combined with "One-Click Resume", you can instantly patch missing slices and auto-merge, completely ending the "fake success" loophole.
+* **免打扰画质选择 | Do-Not-Disturb Quality Selection**
+    * **ZH:** 强化了底层引擎的自动容错机制，遇到多画质 M3U8 菜单时将自动静默选择最高画质，彻底实现“零交互”无感下载。
+    * **EN:** Strengthened the underlying engine's auto-fault-tolerance. When encountering a multi-quality M3U8 menu, it will silently auto-select the highest quality, achieving truly "zero-interaction" seamless downloads.
 
-万能嗅探兜底 | Universal Sniffing Fallback: * ZH: 即使不配置任何规则，引擎也会尝试自动提取下载链接的主机名作为 Referer，通杀 80% 的中小影视网站防盗链。
+* **界面交互优化 | UI Interaction Optimization**
+    * **ZH:** 优化了“高级设置”选项卡的滑动交互体验，布局更加清爽。
+    * **EN:** Optimized the scrolling interaction experience in the "Advanced Settings" tab for a cleaner layout.
 
-EN: Even without any rules configured, the engine will attempt to automatically extract the download link's hostname as the Referer, neutralizing anti-leech protections on 80% of small-to-medium video sites.
+---
 
-免打扰画质选择 | Do-Not-Disturb Quality Selection: * ZH: 强化了底层引擎的自动容错机制，遇到多画质 M3U8 菜单时将自动静默选择最高画质，彻底实现“零交互”无感下载。
+#### 💡 `rules.json` 专属规则使用指南 | Exclusive Guide for `rules.json`
 
-EN: Strengthened the underlying engine's auto-fault-tolerance. When encountering a multi-quality M3U8 menu, it will silently auto-select the highest quality, achieving truly "zero-interaction" seamless downloads.
+* **ZH:** 如果您经常下载某些配置了严苛 CDN 防盗链的特定平台视频，可在 `M-Fetch.exe` 同级目录下自行新建 `rules.json` 文件。软件会自动识别匹配特征词，并悄悄为您穿上伪装服。
+* **EN:** If you frequently download videos from specific platforms with strict CDN anti-leech protections, you can manually create a `rules.json` file in the same directory as `M-Fetch.exe`. The software will automatically identify matching keywords and quietly equip the disguise for you.
 
-ZH: 优化了“高级设置”选项卡的滑动交互体验，布局更加清爽。
+**格式示例 | Format Example:**
 
-EN: Optimized the scrolling interaction experience in the "Advanced Settings" tab for a cleaner layout.
-
-💡 rules.json 专属规则使用指南 | Exclusive Guide for rules.json
-ZH: 如果您经常下载某些配置了严苛 CDN 防盗链的特定平台视频，可在 M-Fetch.exe 同级目录下自行新建 rules.json 文件。软件会自动识别匹配特征词，并悄悄为您穿上伪装服。
-EN: If you frequently download videos from specific platforms with strict CDN anti-leech protections, you can manually create a rules.json file in the same directory as M-Fetch.exe. The software will automatically identify matching keywords and quietly equip the disguise for you.
-
-格式示例 | Format Example:
-
-**格式示例：**
 ```json
 {
     "特征词或域名片段（Domain）": {
