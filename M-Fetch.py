@@ -4,13 +4,15 @@
 """
 =============================================================================
 Project     : M-Fetch (极简 M3U8 下载器)
-Version     : 1.1.0
-Description : A minimalist, ad-free, high-performance M3U8 & Streaming downloader 
+Version     : 1.2.0
+Description : A minimalist, ad-free, bilingual M3U8 & Streaming downloader 
               GUI based on N_m3u8DL-RE and FFmpeg.
-Author      : Okqiyi (https://okqiyi.com/m-fetch/)
+Author      : Okqiyi (https://github.com/Nanobanana-AI/M-Fetch)
+Copyright   : (c) 2026 Okqiyi. All rights reserved.
 License     : MIT License
 =============================================================================
 """
+
 import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 import threading
@@ -26,6 +28,219 @@ import urllib.request
 from datetime import datetime
 import concurrent.futures
 import webbrowser  
+import locale
+import pystray
+from PIL import Image
+
+# ==========================================
+# --- 新增：双语字典与语言检测引擎 ---
+# ==========================================
+def get_sys_language():
+    try:
+        import os
+        if os.name == 'nt':  # 完美规避警告，直接调用 Windows 底层 API
+            import ctypes
+            import locale
+            lang_id = ctypes.windll.kernel32.GetUserDefaultUILanguage()
+            sys_lang = locale.windows_locale.get(lang_id, 'en_US')
+        else:
+            import locale
+            sys_lang, _ = locale.getlocale()
+        return 'zh_CN' if sys_lang and sys_lang.startswith('zh') else 'en_US'
+    except:
+        return 'en_US'
+
+# 初始获取系统语言 (稍后会在 load_config 中被用户自定义设置覆盖)
+LANG = get_sys_language()
+
+UI_TEXT = {
+    'zh_CN': {
+        'title': "M-Fetch | 极简 M3U8 下载器 V1.2.0",
+        'url_label': "下载地址:",
+        'name_label': "保存文件:",
+        'path_label': "保存路径:",
+        'btn_select': "选择",
+        'btn_open': "打开",
+        'btn_dl': "立即下载",
+        'chk_auto': "监听到链接后自动开始",
+        'tab_dl': " 正在下载 ",
+        'tab_ok': " 下载完成 ",
+        'tab_fail': " 下载失败 ",
+        'tab_set': " ⚙️ 高级设置 ",
+        'tab_about': " 💡 关于 ",
+        'col_id': "ID",
+        'col_name': "文件名",
+        'col_prog': "进度",
+        'col_speed': "速度",
+        'col_status': "状态",
+        'col_size': "文件大小",
+        'btn_start_all': "全部开始 ",
+        'btn_clear_ok': "清空完成记录",
+        'btn_resume_all': "全部断点续传",
+        'btn_clear_fail': "清空失败记录",
+        'set_max_workers': "最大并发任务数:",
+        'set_thread_count': "单任务下载线程:",
+        'set_timeout': "网络超时阀值(秒):",
+        'set_retry': "失败重试次数:",
+        'set_file_handle': "文件处理 ",
+        'set_skip_merge': "下载后保留原始 TS 分片 (不合并 MP4)",
+        'set_network': "网络与请求 ",
+        'set_headers': "自定义请求头:",
+        'set_headers_hint': "(支持多行，User-Agent: iOS  Cookie: mycookie )",
+        'set_proxy': "本地代理地址:",
+        'set_proxy_enable': "启用",
+        'set_rules': "启用同目录下的规则文件 (rules.json)",
+        'set_language': "界面语言 (Language):",
+        'lang_auto': "自动 (Auto)",
+        'msg_restart': "语言设置已更改，请重启软件生效！\n(Language setting saved, please restart M-Fetch.)",
+        'btn_reset': "恢复默认",
+        'btn_save': "保存设置",
+        'about_desc': (
+            "本软件为纯粹的效率工具，基于 N_m3u8DL-RE 强力内核构建。\n"
+            "主打极简、秒开、无感后台运行与批量断点续传。\n"
+            "【V1.2.0 核心升级】\n"
+            "新增中英双语智能切换，并完美适配了国际化界面的极简排版。\n"
+            "如果您觉得这款工具为您节省了宝贵的时间，\n"
+            "欢迎扫码请开发者喝杯咖啡 ☕ \n"
+            "2026年6月6日"
+        ),
+        'about_github': "👉 访问 GitHub 获取最新源码与完整更新日志",
+        'about_site': "🌐 访问作者官网：okqiyi.com",
+        'about_qr_fail': "[请放置 donate.png]",
+        'msg_confirm': "确认",
+        'msg_reset': "确定要恢复到默认设置吗？\n(包含高级设置与默认下载路径)",
+        'msg_tips': "提示",
+        'msg_incomplete': "信息不完整！",
+        'msg_open_fail': "打开失败",
+        'msg_open_fail_detail': "无法打开该目录:\n",
+        'msg_clear_confirm': "清理确认",
+        'msg_clear_desc': "确定要清除列表记录吗？\n(仅清理软件记录，硬盘上的文件不会被删除)",
+        'msg_success': "成功",
+        'msg_save_ok': "设置已保存！\n(部分设置将在下一次任务生效)",
+        'msg_error': "错误",
+        'msg_number_err': "请确保并发、线程、超时等输入均为有效数字！",
+        'status_wait': "等待中",
+        'status_dl': "下载中",
+        'status_fail': "失败",
+        'status_repeat': "重复拦截",
+        'status_resume': "正在恢复",
+        'status_unknown': "未知",
+        'status_kept': "分片已保留",
+        'status_verify_fail': "校验失败/断流",
+        'menu_start': "▶ 开始/继续下载",
+        'menu_open_dir': "📂 打开所在文件夹",
+        'menu_re_dl': "🔄 重新下载 (断点续传)",
+        'dialog_sel_dir': "选择默认保存目录",
+        'tray_restore': "显示主界面",
+        'tray_quit': "完全退出",
+        'tray_hover': "M-Fetch 后台运行中",
+        'rules_hint': (
+            '//进阶玩法: 请在软件同级目录自行新建 rules.json。\n'
+            '//格式如下 (可直接复制修改):\n'
+            '{\n'
+            '    "网址1": {\n'
+            '        "Origin": "https://www.网址.com",\n'
+            '        "Referer": "https://www.网址.com/"\n'
+            '    }\n'
+            '}'
+        )
+    },
+    'en_US': {
+        'title': "M-Fetch | Minimalist M3U8 Downloader V1.2.0",
+        'url_label': "Download URL:",
+        'name_label': "File Name:",
+        'path_label': "Save Path:",
+        'btn_select': "Select",
+        'btn_open': "Open",
+        'btn_dl': "Download",
+        'chk_auto': "Auto start when link detected",
+        'tab_dl': " Downloading ",
+        'tab_ok': " Completed ",
+        'tab_fail': " Failed ",
+        'tab_set': " ⚙️ Settings ",
+        'tab_about': " 💡 About ",
+        'col_id': "ID",
+        'col_name': "File Name",
+        'col_prog': "Progress",
+        'col_speed': "Speed",
+        'col_status': "Status",
+        'col_size': "Size",
+        'btn_start_all': "Start All ",
+        'btn_clear_ok': "Clear History",
+        'btn_resume_all': "Resume All",
+        'btn_clear_fail': "Clear Failed",
+        'set_max_workers': "Max Concurrent Tasks:",
+        'set_thread_count': "Threads per Task:",
+        'set_timeout': "Network Timeout (s):",
+        'set_retry': "Retry Count:",
+        'set_file_handle': "File Handling ",
+        'set_skip_merge': "Keep original TS segments (Do not merge to MP4)",
+        'set_network': "Network & Requests ",
+        'set_headers': "Custom Headers:",
+        'set_headers_hint': "(Multi-line supported, e.g., User-Agent: iOS)",
+        'set_proxy': "Local Proxy:",
+        'set_proxy_enable': "Enable",
+        'set_rules': "Enable local rules file (rules.json)",
+        'set_language': "Interface Language:",
+        'lang_auto': "Auto Detect",
+        'msg_restart': "Language setting saved, please restart M-Fetch to take effect!",
+        'btn_reset': "Reset Default",
+        'btn_save': "Save Config",
+        'about_desc': (
+            "A minimalist, ad-free efficiency tool based on N_m3u8DL-RE.\n"
+            "Features background running, batch downloading, and resumable tasks.\n"
+            "[V1.2.0 Core Updates]\n"
+            "Introduces smart bilingual support (EN/CN) and optimizes UI layouts for international users.\n"
+            "If this tool saved your precious time,\n"
+            "consider buying the developer a coffee ☕ \n"
+            "June 6, 2026"
+        ),
+        'about_github': "👉 Visit GitHub for source code & updates",
+        'about_site': "🌐 Official Website: okqiyi.com",
+        'about_qr_fail': "[Missing donate.png]",
+        'msg_confirm': "Confirm",
+        'msg_reset': "Are you sure you want to reset to default settings?\n(Includes advanced settings and download path)",
+        'msg_tips': "Notice",
+        'msg_incomplete': "Incomplete information!",
+        'msg_open_fail': "Open Failed",
+        'msg_open_fail_detail': "Cannot open directory:\n",
+        'msg_clear_confirm': "Clear Confirmation",
+        'msg_clear_desc': "Are you sure you want to clear the list?\n(Only removes records, local files will NOT be deleted)",
+        'msg_success': "Success",
+        'msg_save_ok': "Settings saved!\n(Some settings will take effect on the next task)",
+        'msg_error': "Error",
+        'msg_number_err': "Please ensure concurrent, thread, and timeout inputs are valid numbers!",
+        'status_wait': "Waiting",
+        'status_dl': "Downloading",
+        'status_fail': "Failed",
+        'status_repeat': "Duplicated",
+        'status_resume': "Resuming",
+        'status_unknown': "Unknown",
+        'status_kept': "Segments kept",
+        'status_verify_fail': "Verify Failed/Broken",
+        'menu_start': "▶ Start/Resume",
+        'menu_open_dir': "📂 Open Folder",
+        'menu_re_dl': "🔄 Restart (Resume)",
+        'dialog_sel_dir': "Select Default Save Directory",
+        'tray_restore': "Show Main Window",
+        'tray_quit': "Quit M-Fetch",
+        'tray_hover': "M-Fetch is running in background",
+        'rules_hint': (
+            '//Pro tip: Create rules.json in the same directory.\n'
+            '//Format (copy and modify):\n'
+            '{\n'
+            '    "domain1": {\n'
+            '        "Origin": "https://www.domain.com",\n'
+            '        "Referer": "https://www.domain.com/"\n'
+            '    }\n'
+            '}'
+        )
+    }
+}
+
+def get_text(key):
+    return UI_TEXT.get(LANG, UI_TEXT['en_US']).get(key, "")
+# ==========================================
 
 def resource_path(relative_path):
     """获取资源的绝对路径，兼容开发环境与 PyInstaller 打包后的单文件环境"""
@@ -36,17 +251,18 @@ def resource_path(relative_path):
 class M3U8TaskApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("M-Fetch | 极简 M3U8 下载器 V1.1.0")
+        
+        # --- 核心修复：必须先加载配置（确定最终语言），再去渲染带文字的组件 ---
+        self.load_config()
+        
+        self.root.title(get_text('title'))
         self.root.geometry("620x500")
         self.root.resizable(False, False)
         # --- 新增：设置窗口左上角的 Logo ---
         try:
             self.root.iconbitmap(resource_path("logo.ico"))
         except:
-            pass # 如果没找到图标就不显示，防止报错
-
-        # --- 新增：加载配置文件 ---
-        self.load_config()
+            pass
         
         # 核心设置：改由配置文件接管
         self.executor = concurrent.futures.ThreadPoolExecutor(max_workers=self.config.get("max_workers", 10))
@@ -64,6 +280,10 @@ class M3U8TaskApp:
         
         # 启动剪贴板监听
         self.monitor_clipboard()
+        
+        # --- 新增：接管最小化按钮 (-) 和 关闭按钮 (X) ---
+        self.root.bind("<Unmap>", self.on_unmap)
+        self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
         
     def get_system_proxy_url(self):
         """自动探测并获取 Windows 系统当前的代理地址"""
@@ -114,6 +334,50 @@ class M3U8TaskApp:
         self.cursor.execute("UPDATE tasks SET status=0 WHERE status=1")
         self.conn.commit()
         
+    def on_unmap(self, event):
+        """精准拦截点击 [-] 最小化按钮的动作"""
+        # 判断必须是主窗口，且状态确实变成了最小化 ('iconic')
+        if event.widget == self.root and self.root.state() == 'iconic':
+            self.root.withdraw()  # 核心：从任务栏彻底隐藏
+            self.show_tray()      # 呼出系统右下角托盘图标
+
+    def on_closing(self):
+        """精准拦截点击 [X] 关闭按钮的动作：不弹窗，直接绝杀"""
+        try:
+            self.conn.close() # 礼貌性地断开数据库
+        except:
+            pass
+        self.root.destroy()
+        os._exit(0) # 暴力而干净地清空所有后台下载线程，直接退出
+
+    def show_tray(self):
+        """构建右下角托盘图标与右键菜单"""
+        # 尝试加载你的 logo，如果没有就临时画个蓝色的纯色方块兜底
+        try:
+            image = Image.open(resource_path("logo.ico"))
+        except:
+            image = Image.new('RGB', (64, 64), color=(33, 150, 243))
+
+        menu = pystray.Menu(
+            # default=True 意味着你双击那个小图标，就会执行这个命令
+            pystray.MenuItem(get_text('tray_restore'), self.restore_window, default=True),
+            pystray.MenuItem(get_text('tray_quit'), self.quit_window)
+        )
+        self.tray_icon = pystray.Icon("M-Fetch", image, get_text('tray_hover'), menu)
+        
+        # 必须把托盘扔进后台线程跑，否则会把 Tkinter 的界面卡死
+        threading.Thread(target=self.tray_icon.run, daemon=True).start()
+
+    def restore_window(self, icon, item):
+        """从托盘恢复到桌面"""
+        icon.stop() # 销毁托盘图标
+        self.root.after(0, self.root.deiconify) # 将窗口重新放回任务栏和桌面
+
+    def quit_window(self, icon, item):
+        """在托盘右键点退出的逻辑"""
+        icon.stop()
+        self.on_closing()       
+       
     def load_config(self):
         """加载配置文件，如果为空或不存在则使用默认值"""
         self.config_file = "config.json"
@@ -126,7 +390,8 @@ class M3U8TaskApp:
             "skip_merge": False,    # <--- 新增：默认不跳过，也就是默认会合并成 MP4
             "enable_rules": False,       # 👇 加上这行：给规则文件一个默认不开启的初始状态
             "use_proxy": False,                          # 新增：代理开关
-            "proxy_url": self.get_system_proxy_url()         # 新增：默认代理地址
+            "proxy_url": self.get_system_proxy_url(),         # 新增：默认代理地址
+            "language": "auto"   # 默认自动探测
             
         }
         try:
@@ -136,6 +401,14 @@ class M3U8TaskApp:
         except (FileNotFoundError, json.JSONDecodeError):
             self.config = self.default_config.copy()
             self.save_config() # 初始化一个干净的 json
+            
+        # --- 新增：读取用户设定的语言，并覆写全局 LANG 变量 ---
+        global LANG
+        saved_lang = self.config.get("language", "auto")
+        if saved_lang != "auto":
+            LANG = saved_lang
+        else:
+            LANG = get_sys_language()
 
     def save_config(self):
         """保存当前配置到 JSON"""
@@ -144,7 +417,7 @@ class M3U8TaskApp:
 
     def restore_settings(self):
         """恢复默认设置并更新 UI"""
-        if messagebox.askyesno("确认", "确定要恢复到默认设置吗？\n(包含高级设置与默认下载路径)"):
+        if messagebox.askyesno(get_text('msg_confirm'), get_text('msg_reset')):
             # 1. 恢复配置字典里的参数（并发、线程、超时等）
             for key, default_val in self.default_config.items():
                 if key in self.setting_vars:
@@ -170,16 +443,16 @@ class M3U8TaskApp:
       
         
         # --- 顶部输入区 ---
-        tk.Label(self.root, text="下载地址:").place(x=15, y=15)
+        tk.Label(self.root, text=get_text('url_label')).place(x=15, y=15)
         self.url_var = tk.StringVar()
         tk.Entry(self.root, textvariable=self.url_var, width=65).place(x=80, y=15)
 
-        tk.Label(self.root, text="保存文件:").place(x=15, y=55)
+        tk.Label(self.root, text=get_text('name_label')).place(x=15, y=55)
         self.name_var = tk.StringVar()
         tk.Entry(self.root, textvariable=self.name_var, width=65).place(x=80, y=55)
 
         # --- 新版：保存路径区域 ---
-        tk.Label(self.root, text="保存路径:").place(x=15, y=95)
+        tk.Label(self.root, text=get_text('path_label')).place(x=15, y=95)
         
         # 1. 自动获取当前目录下 Downloads 的绝对路径，并确保目录存在
         abs_download_path = os.path.abspath("Downloads")
@@ -190,18 +463,18 @@ class M3U8TaskApp:
         tk.Entry(self.root, textvariable=self.dir_var, width=48).place(x=80, y=95)
         
         # 2. “选择”按钮
-        tk.Button(self.root, text="选择", cursor="hand2", command=self.choose_dir).place(x=435, y=91, width=50, height=25)
+        tk.Button(self.root, text=get_text('btn_select'), cursor="hand2", command=self.choose_dir).place(x=435, y=91, width=50, height=25)
         
         # 3. “打开”按钮
-        tk.Button(self.root, text="打开", cursor="hand2", command=self.open_current_dir).place(x=495, y=91, width=50, height=25)
+        tk.Button(self.root, text=get_text('btn_open'), cursor="hand2", command=self.open_current_dir).place(x=495, y=91, width=50, height=25)
 
-        self.download_btn = tk.Button(self.root, text="立即下载", bg="#4CAF50", fg="white", 
+        self.download_btn = tk.Button(self.root, text=get_text('btn_dl'), bg="#4CAF50", fg="white", 
                                       font=("Microsoft YaHei", 10, "bold"), command=self.add_new_task)
         self.download_btn.place(x=250, y=135, width=120, height=35)
         
         # --- 新增：自动下载复选框 ---
         self.auto_dl_var = tk.BooleanVar(value=True) # 默认值为 True（开启）
-        tk.Checkbutton(self.root, text="监听到链接后自动开始", variable=self.auto_dl_var).place(x=390, y=140)
+        tk.Checkbutton(self.root, text=get_text('chk_auto'), variable=self.auto_dl_var).place(x=390, y=140)
 
         # --- 底部任务管理器 (Tab) ---
         self.notebook = ttk.Notebook(self.root)
@@ -209,12 +482,12 @@ class M3U8TaskApp:
 
         # 1. 正在下载 Tab
         self.frame_dl = ttk.Frame(self.notebook)
-        self.notebook.add(self.frame_dl, text=" 正在下载 ")
+        self.notebook.add(self.frame_dl, text=get_text('tab_dl'))
         # 调整了宽度，新增了 "status" (状态) 列
         self.tree_dl = self.create_treeview(self.frame_dl, columns=("id", "name", "progress", "speed", "status"), 
-                                            headings=("ID", "文件名", "进度", "速度", "状态"), widths=(40, 220, 80, 100, 80))
+                                            headings=(get_text('col_id'), get_text('col_name'), get_text('col_prog'), get_text('col_speed'), get_text('col_status')), widths=(40, 220, 80, 100, 80))
         # 新增：全部开始按钮 (挂在表格上方)
-        tk.Button(self.frame_dl, text="全部开始 ", command=self.start_all_waiting).place(x=460, y=5, width=110, height=25)
+        tk.Button(self.frame_dl, text=get_text('btn_start_all'), command=self.start_all_waiting).place(x=460, y=5, width=110, height=25)
         # 绑定右键菜单：手动开始等待中的任务
         self.tree_dl.bind("<Button-3>", lambda e: self.show_context_menu(e, self.tree_dl, "dl"))
         # --- 新增：为下载列表绑定 Del 键 ---
@@ -222,29 +495,29 @@ class M3U8TaskApp:
 
         # 2. 下载完成 Tab
         self.frame_ok = ttk.Frame(self.notebook)
-        self.notebook.add(self.frame_ok, text=" 下载完成 ")
+        self.notebook.add(self.frame_ok, text=get_text('tab_ok'))
         self.tree_ok = self.create_treeview(self.frame_ok, columns=("id", "name", "size"), 
-                                            headings=("ID", "文件名", "文件大小"), widths=(40, 360, 140))
-        tk.Button(self.frame_ok, text="清空完成记录", command=lambda: self.clear_records(2)).place(x=480, y=5, width=90, height=25)
+                                            headings=(get_text('col_id'), get_text('col_name'), get_text('col_size')), widths=(40, 360, 140))
+        tk.Button(self.frame_ok, text=get_text('btn_clear_ok'), command=lambda: self.clear_records(2)).place(x=480, y=5, width=90, height=25)
         self.tree_ok.bind("<Button-3>", lambda e: self.show_context_menu(e, self.tree_ok, "ok"))
 
         # 3. 下载失败 Tab
         self.frame_fail = ttk.Frame(self.notebook)
-        self.notebook.add(self.frame_fail, text=" 下载失败 ")
+        self.notebook.add(self.frame_fail, text=get_text('tab_fail'))
         self.tree_fail = self.create_treeview(self.frame_fail, columns=("id", "name", "status"), 
-                                              headings=("ID", "文件名", "状态"), widths=(40, 360, 140))
+                                              headings=(get_text('col_id'), get_text('col_name'), get_text('col_status')), widths=(40, 360, 140))
         # --- 新增：为失败列表绑定 Del 键 ---
         self.tree_fail.bind("<Delete>", lambda e: self.delete_selected_item(self.tree_fail))
                                               
         # --- 新增：全部断点续传按钮（放在清空按钮左侧） ---
-        tk.Button(self.frame_fail, text="全部断点续传", command=self.resume_all_failed).place(x=380, y=5, width=90, height=25)                                               
-        tk.Button(self.frame_fail, text="清空失败记录", command=lambda: self.clear_records(3)).place(x=480, y=5, width=90, height=25)
+        tk.Button(self.frame_fail, text=get_text('btn_resume_all'), command=self.resume_all_failed).place(x=380, y=5, width=90, height=25)                                               
+        tk.Button(self.frame_fail, text=get_text('btn_clear_fail'), command=lambda: self.clear_records(3)).place(x=480, y=5, width=90, height=25)
         self.tree_fail.bind("<Button-3>", lambda e: self.show_context_menu(e, self.tree_fail, "fail"))
         
         
         # 4. 高级设置 Tab
         self.frame_settings = ttk.Frame(self.notebook)
-        self.notebook.add(self.frame_settings, text=" ⚙️ 高级设置 ")
+        self.notebook.add(self.frame_settings, text=get_text('tab_set'))
         
 
         # 创建一个 Canvas 和 Scrollbar 来实现滑动效果
@@ -272,8 +545,8 @@ class M3U8TaskApp:
 
         # 动态生成输入框并保存引用
         self.setting_vars = {}
-        labels = {"max_workers": "最大并发任务数:", "thread_count": "单任务下载线程:", 
-                  "timeout": "网络超时阀值(秒):", "retry_count": "失败重试次数:"}
+        labels = {"max_workers": get_text('set_max_workers'), "thread_count": get_text('set_thread_count'), 
+                  "timeout": get_text('set_timeout'), "retry_count": get_text('set_retry')}
         
         for i, (key, label_text) in enumerate(labels.items()):
             tk.Label(self.scrollable_frame, text=label_text).grid(row=i, column=0, padx=20, pady=12, sticky="w")
@@ -283,19 +556,19 @@ class M3U8TaskApp:
         
         # --- 文件处理选项  ---
         ttk.Separator(self.scrollable_frame, orient='horizontal').grid(row=4, column=0, columnspan=2, sticky="ew", pady=10, padx=10)
-        tk.Label(self.scrollable_frame, text="文件处理 ", fg="#2196F3", font=("", 9, "bold")).grid(row=5, column=0, columnspan=2, sticky="w", padx=15, pady=5)
+        tk.Label(self.scrollable_frame, text=get_text('set_file_handle'), fg="#2196F3", font=("", 9, "bold")).grid(row=5, column=0, columnspan=2, sticky="w", padx=15, pady=5)
         
         self.skip_merge_var = tk.BooleanVar(value=self.config.get("skip_merge", False))
-        ttk.Checkbutton(self.scrollable_frame, text="下载后保留原始 TS 分片 (不合并 MP4)", 
+        ttk.Checkbutton(self.scrollable_frame, text=get_text('set_skip_merge'), 
                         variable=self.skip_merge_var).grid(row=6, column=0, columnspan=2, padx=20, pady=5, sticky="w")
 
         # --- 网络与请求设置  ---
         ttk.Separator(self.scrollable_frame, orient='horizontal').grid(row=7, column=0, columnspan=2, sticky="ew", pady=10, padx=10)
-        tk.Label(self.scrollable_frame, text="网络与请求 ", fg="#2196F3", font=("", 9, "bold")).grid(row=8, column=0, columnspan=2, sticky="w", padx=15, pady=5)
+        tk.Label(self.scrollable_frame, text=get_text('set_network'), fg="#2196F3", font=("", 9, "bold")).grid(row=8, column=0, columnspan=2, sticky="w", padx=15, pady=5)
 
         # 1. 自定义表头 (Headers) - 升级为多行支持
         # 注意这里的 sticky 改成了 "nw"，让文字跟文本框顶部对齐
-        tk.Label(self.scrollable_frame, text="自定义请求头:", fg="#333").grid(row=9, column=0, padx=20, pady=8, sticky="nw")
+        tk.Label(self.scrollable_frame, text=get_text('set_headers'), fg="#333").grid(row=9, column=0, padx=20, pady=8, sticky="nw")
         
         # 使用 Text 控件代替 Entry，height=3 表示默认显示 3 行高度
         self.header_text = tk.Text(self.scrollable_frame, width=40, height=3, font=("Microsoft YaHei", 9))
@@ -304,26 +577,17 @@ class M3U8TaskApp:
         self.header_text.insert("1.0", self.config.get("custom_header", "")) 
         
         # 升级提示语，展示多行示例
-        tk.Label(self.scrollable_frame, text="(支持多行，User-Agent: iOS  Cookie: mycookie )", 
+        tk.Label(self.scrollable_frame, text=get_text('set_headers_hint'), 
                  fg="gray", font=("", 8), justify="left").grid(row=10, column=1, sticky="nw", padx=10, pady=(0, 5))
                  
                  
         # 3. 外部规则文件
         self.enable_rules_var = tk.BooleanVar(value=self.config.get("enable_rules", False))
-        ttk.Checkbutton(self.scrollable_frame, text="启用同目录下的规则文件 (rules.json)", 
+        ttk.Checkbutton(self.scrollable_frame, text=get_text('set_rules'), 
                         variable=self.enable_rules_var).grid(row=12, column=0, columnspan=2, padx=20, pady=(5, 0), sticky="w")
         
         # --- 新增：灰色的规则文件格式说明 (改为可复制的 Text 控件) ---
-        rules_hint = (
-            '//进阶玩法: 请在软件同级目录自行新建 rules.json。\n'
-            '//格式如下 (可直接复制修改):\n'
-            '{\n'
-            '    "网址1": {\n'
-            '        "Origin": "https://www.网址1.com",\n'
-            '        "Referer": "https://www.网址1.com/"\n'
-            '    }\n'
-            '}'
-        )
+        rules_hint = get_text('rules_hint')
         
         # 使用 Text 控件替代 Label，去掉边框 (bd=0)，背景色设为与窗口一致的浅灰色
         hint_box = tk.Text(self.scrollable_frame, height=7, width=65, bg="#f0f0f0", bd=0, fg="gray", font=("", 8))
@@ -332,15 +596,38 @@ class M3U8TaskApp:
         
         # 核心黑科技：拦截除了 Ctrl+C (复制) 之外的所有键盘输入，实现“只读可复制”
         hint_box.bind("<Key>", lambda e: "break" if not (e.state & 4 and e.keysym.lower() == 'c') else None)   
+        
+        # ==========================================
+        # --- 新增：语言切换下拉框 ---
+        # ==========================================
+        ttk.Separator(self.scrollable_frame, orient='horizontal').grid(row=14, column=0, columnspan=2, sticky="ew", pady=10, padx=10)
+        tk.Label(self.scrollable_frame, text=get_text('set_language'), fg="#333").grid(row=15, column=0, padx=20, pady=8, sticky="w")
+        
+        # 建立语言字典映射
+        self.lang_map = {
+            get_text('lang_auto'): "auto",
+            "简体中文": "zh_CN",
+            "English": "en_US"
+        }
+        self.reverse_lang_map = {v: k for k, v in self.lang_map.items()}
+        
+        # 读取当前配置并转换为显示文字
+        current_lang_val = self.config.get("language", "auto")
+        display_val = self.reverse_lang_map.get(current_lang_val, get_text('lang_auto'))
+        
+        self.lang_display_var = tk.StringVar(value=display_val)
+        lang_combo = ttk.Combobox(self.scrollable_frame, textvariable=self.lang_display_var, state="readonly", width=18)
+        lang_combo['values'] = list(self.lang_map.keys())
+        lang_combo.grid(row=15, column=1, padx=10, pady=8, sticky="w")
 
         # 2. 代理设置
-        tk.Label(self.scrollable_frame, text="本地代理地址:", fg="#333").grid(row=11, column=0, padx=20, pady=8, sticky="w")
+        tk.Label(self.scrollable_frame, text=get_text('set_proxy'), fg="#333").grid(row=11, column=0, padx=20, pady=8, sticky="w")
         
         proxy_frame = tk.Frame(self.scrollable_frame)
         proxy_frame.grid(row=11, column=1, padx=10, pady=8, sticky="w")
         
         self.use_proxy_var = tk.BooleanVar(value=self.config.get("use_proxy", False))
-        ttk.Checkbutton(proxy_frame, text="启用", variable=self.use_proxy_var).pack(side="left")
+        ttk.Checkbutton(proxy_frame, text=get_text('set_proxy_enable'), variable=self.use_proxy_var).pack(side="left")
         
         
         self.proxy_url_var = tk.StringVar(value=self.config.get("proxy_url", ""))
@@ -348,12 +635,12 @@ class M3U8TaskApp:
         
 
         # 底部两个功能按钮 (固定在 Tab 最下方，不随内容滑动)
-        tk.Button(self.frame_settings, text="恢复默认", command=self.restore_settings).place(x=340, y=225, width=100, height=30)
-        tk.Button(self.frame_settings, text="保存设置", bg="#2196F3", fg="white", command=self.apply_settings).place(x=460, y=225, width=100, height=30)
+        tk.Button(self.frame_settings, text=get_text('btn_reset'), command=self.restore_settings).place(x=340, y=225, width=100, height=30)
+        tk.Button(self.frame_settings, text=get_text('btn_save'), bg="#2196F3", fg="white", command=self.apply_settings).place(x=460, y=225, width=100, height=30)
 
        # 5. 关于与赞赏 Tab
         self.frame_about = ttk.Frame(self.notebook)
-        self.notebook.add(self.frame_about, text=" 💡 关于 ")
+        self.notebook.add(self.frame_about, text=get_text('tab_about'))
 
         # 增加 Canvas 和 Scrollbar 支持滑动
         self.canvas_about = tk.Canvas(self.frame_about, highlightthickness=0)
@@ -367,8 +654,8 @@ class M3U8TaskApp:
             "<Configure>",
             lambda e: self.canvas_about.configure(scrollregion=self.canvas_about.bbox("all"))
         )
-        # 将容器放入 Canvas，并使其水平居中 (X=280)
-        self.canvas_about.create_window((280, 10), window=about_container, anchor="n")
+        # 改为左上角对齐 (nw) 并设置较小的 X 轴边距，完美解决英文超长被挤出边界的问题
+        self.canvas_about.create_window((15, 10), window=about_container, anchor="nw")
         self.canvas_about.configure(yscrollcommand=self.scrollbar_about.set)
 
         # 布局滑动区域
@@ -380,16 +667,13 @@ class M3U8TaskApp:
         self.canvas_about.bind('<Leave>', lambda e: self.canvas_about.unbind_all("<MouseWheel>"))
 
         # --- 左侧：软件说明文字 ---
-        about_text = (
-            "本软件为纯粹的效率工具，基于 N_m3u8DL-RE 强力内核构建。\n"
-            "主打极简、秒开、无感后台运行与批量断点续传。\n"
-            "【V1.1.0 核心升级】\n"
-            "支持多行链接批量排队，新增自定义请求头和规则与错峰引擎。\n\n"
-            "如果您觉得这款工具为您节省了宝贵的时间，\n"
-            "欢迎扫码请开发者喝杯咖啡 ☕ \n"
-             "2026年6月1日"
-        )
+        about_text = get_text('about_desc')
         
+        # 判断当前真正生效的语言
+        active_lang = self.config.get("language", "auto")
+        if active_lang == "auto":
+            active_lang = LANG
+
         # 创建一个左侧容器来垂直排列文字和链接
         left_container = tk.Frame(about_container)
         left_container.pack(side="left", padx=(0, 30), pady=10, fill="y")
@@ -398,25 +682,34 @@ class M3U8TaskApp:
         text_label.pack(anchor="w")
 
         # --- 新增：可点击的 GitHub 超链接 ---
-        github_link = tk.Label(left_container, text="👉 访问 GitHub 获取最新源码与完整更新日志", 
+        github_link = tk.Label(left_container, text=get_text('about_github'), 
                                fg="#2196F3", font=("Microsoft YaHei", 9, "underline"), cursor="hand2")
         github_link.pack(anchor="w", pady=(5, 0))
         # 绑定鼠标左键点击事件，调用默认浏览器打开网页
         github_link.bind("<Button-1>", lambda e: webbrowser.open("https://github.com/Nanobanana-AI/M-Fetch"))
         
         # 顺便把你的官方网站也加个链接背书
-        website_link = tk.Label(left_container, text="🌐 访问作者官网：okqiyi.com", 
+        website_link = tk.Label(left_container, text=get_text('about_site'), 
                                fg="#2196F3", font=("Microsoft YaHei", 9, "underline"), cursor="hand2")
         website_link.pack(anchor="w", pady=(5, 0))
         website_link.bind("<Button-1>", lambda e: webbrowser.open("https://okqiyi.com/m-fetch/"))
 
-        # --- 右侧：加载二维码图片 (保持不变) ---
-        try:
-            self.qr_image = tk.PhotoImage(file=resource_path("donate.png"))
-            img_label = tk.Label(about_container, image=self.qr_image)
-            img_label.pack(side="left")
-        except Exception:
-            tk.Label(about_container, text="[请放置 donate.png]", fg="gray").pack(side="left")
+        # ==========================================
+        # --- 动态排版：中文显示赞赏码，英文隐藏图片并显示 PayPal ---
+        # ==========================================
+        if active_lang == "zh_CN":
+            try:
+                self.qr_image = tk.PhotoImage(file=resource_path("donate.png"))
+                img_label = tk.Label(about_container, image=self.qr_image)
+                img_label.pack(side="left")
+            except Exception:
+                tk.Label(about_container, text=get_text('about_qr_fail'), fg="gray").pack(side="left")
+        else:
+            # 英文环境下，不加载图片，在左侧容器直接追加一个加粗的橘色 PayPal 专属超链接
+            paypal_link = tk.Label(left_container, text="☕ Support via PayPal", 
+                                   fg="#FF9800", font=("Microsoft YaHei", 9, "underline", "bold"), cursor="hand2")
+            paypal_link.pack(anchor="w", pady=(5, 0))
+            paypal_link.bind("<Button-1>", lambda e: webbrowser.open("https://www.paypal.com/paypalme/Okqiyi"))
             
     def start_all_waiting(self):
         """一键把列表中所有 '等待中' 的任务推入下载队列"""
@@ -424,14 +717,14 @@ class M3U8TaskApp:
         for iid in items:
             vals = self.tree_dl.item(iid, 'values')
             # 判断第5列(索引4)是否为等待中
-            if vals[4] == "等待中":  
+            if vals[4] == get_text('status_wait'):  
                 self.resume_task(vals[0])        
             
     def choose_dir(self):
         """弹出选择文件夹对话框"""
         current_path = self.dir_var.get().strip()
         # 弹出系统原生的文件夹选择窗口
-        selected_dir = filedialog.askdirectory(initialdir=current_path, title="选择默认保存目录")
+        selected_dir = filedialog.askdirectory(initialdir=current_path, title=get_text('dialog_sel_dir'))
         
         if selected_dir:
             # 将路径转换为 Windows 友好的绝对路径并写回输入框
@@ -450,7 +743,7 @@ class M3U8TaskApp:
             # 调用 Windows 资源管理器打开该路径
             os.startfile(target_path)
         except Exception as e:
-            messagebox.showerror("打开失败", f"无法打开该目录:\n{e}")       
+            messagebox.showerror(get_text('msg_open_fail'), f"{get_text('msg_open_fail_detail')}{e}")       
 
 
     def create_treeview(self, parent, columns, headings, widths):
@@ -468,15 +761,15 @@ class M3U8TaskApp:
             current_clipboard = self.root.clipboard_get().strip()
             if current_clipboard != self.last_clipboard:
                 
-                # --- 暴力清洗与提取引擎 ---
+                # --- 暴力清洗与提取引擎 (正则强化版) ---
                 valid_urls = []
-                # 使用 split() 代替 splitlines()，无视空格、换行、Tab等一切干扰符
-                for item in current_clipboard.split():
-                    item = item.strip()
-                    if item.startswith("http") and ".m3u8" in item:
-                        # 顺手做个列表内去重，防止嗅探插件重复复制
-                        if item not in valid_urls:
-                            valid_urls.append(item)
+                # 核心黑科技：直接用正则无视任何 JSON、引号或尖括号包裹，强行抠出所有 m3u8 链接
+                raw_urls = re.findall(r"https?://[^\s\"'<>]+?\.m3u8[^\s\"'<>]*", current_clipboard)
+                
+                # 顺手做个列表内去重，防止嗅探插件重复复制
+                for item in raw_urls:
+                    if item not in valid_urls:
+                        valid_urls.append(item)
                 # -------------------------
                 
                 if valid_urls:
@@ -519,11 +812,11 @@ class M3U8TaskApp:
         for row in self.cursor.fetchall():
             task_id, url, fname, spath, status, size, prog, speed = row
             if status == 0:  # 等待中
-                self.tree_dl.insert('', 'end', iid=task_id, values=(task_id, fname, "0%", "-", "等待中"))
+                self.tree_dl.insert('', 'end', iid=task_id, values=(task_id, fname, "0%", "-", get_text('status_wait')))
             elif status == 2:  # 完成
                 self.tree_ok.insert('', 'end', iid=task_id, values=(task_id, fname, size))
             elif status == 3:  # 失败
-                self.tree_fail.insert('', 'end', iid=task_id, values=(task_id, fname, "失败"))
+                self.tree_fail.insert('', 'end', iid=task_id, values=(task_id, fname, get_text('status_fail')))
 
     def add_new_task(self, input_url=None, input_fname=None, input_spath=None, auto_start=True):
         """点击下载按钮触发或剪贴板批量触发：入库并调度"""
@@ -533,7 +826,7 @@ class M3U8TaskApp:
         
         if not url or not fname or not spath:
             if not input_url:  
-                messagebox.showwarning("提示", "信息不完整！")
+                messagebox.showwarning(get_text('msg_tips'), get_text('msg_incomplete'))
             return
 
         self.cursor.execute("SELECT id FROM tasks WHERE url=? AND status IN (0, 1, 2)", (url,))
@@ -542,7 +835,7 @@ class M3U8TaskApp:
                                 (url, fname, spath))
             self.conn.commit()
             task_id = self.cursor.lastrowid
-            self.tree_fail.insert('', 0, iid=task_id, values=(task_id, fname, "重复拦截"))
+            self.tree_fail.insert('', 0, iid=task_id, values=(task_id, fname, get_text('status_repeat')))
             if not input_url: 
                 self.url_var.set("")
                 self.name_var.set("")
@@ -557,11 +850,11 @@ class M3U8TaskApp:
 
         if auto_start:
             # 加入 UI 并在后台启动
-            self.tree_dl.insert('', 'end', iid=task_id, values=(task_id, fname, "0%", "-", "下载中"))
+            self.tree_dl.insert('', 'end', iid=task_id, values=(task_id, fname, "0%", "-", get_text('status_dl')))
             self.executor.submit(self.download_worker, task_id, url, fname, spath)
         else:
             # 仅加入 UI，不提交给线程池
-            self.tree_dl.insert('', 'end', iid=task_id, values=(task_id, fname, "0%", "-", "等待中"))
+            self.tree_dl.insert('', 'end', iid=task_id, values=(task_id, fname, "0%", "-", get_text('status_wait')))
 
         if not input_url:
             self.url_var.set("")
@@ -708,7 +1001,7 @@ class M3U8TaskApp:
         # 即使底层报告成功，也要亲自去硬盘上确认目标文件是否存在
         # ==========================================
         actual_success = is_success
-        final_size = "未知"
+        final_size = get_text('status_unknown')
         
         if actual_success:
             # 1. 如果用户【没有】勾选不合并 -> 必须得有完整的 .mp4 才能算真成功
@@ -724,7 +1017,7 @@ class M3U8TaskApp:
             else:
                 target_folder = os.path.join(save_dir, filename)
                 if os.path.exists(target_folder):
-                    final_size = "分片已保留"
+                    final_size = get_text('status_kept')
                 else:
                     actual_success = False
 
@@ -740,7 +1033,7 @@ class M3U8TaskApp:
             self.cursor.execute("UPDATE tasks SET status=3 WHERE id=?", (task_id,))
             self.conn.commit()
             # 添加到失败列表 (用户可在该列表右键断点续传)
-            self.tree_fail.insert('', 0, iid=task_id, values=(task_id, filename, "校验失败/断流"))
+            self.tree_fail.insert('', 0, iid=task_id, values=(task_id, filename, get_text('status_verify_fail')))
 
     def clear_records(self, status):
         """独立清理指定的视图列表与数据库记录（坚决不删本地实际文件）"""
@@ -750,7 +1043,7 @@ class M3U8TaskApp:
         if not items:
             return
             
-        if messagebox.askyesno("清理确认", "确定要清除列表记录吗？\n(仅清理软件记录，硬盘上的文件不会被删除)"):
+        if messagebox.askyesno(get_text('msg_clear_confirm'), get_text('msg_clear_desc')):
             # 1. 删数据库
             self.cursor.execute("DELETE FROM tasks WHERE status=?", (status,))
             self.conn.commit()
@@ -792,14 +1085,14 @@ class M3U8TaskApp:
         item_values = tree.item(iid, 'values')
         task_id = item_values[0]
 
-        if tree_type == "dl" and item_values[4] == "等待中":
-            menu.add_command(label="▶ 开始/继续下载", command=lambda: self.resume_task(task_id))
+        if tree_type == "dl" and item_values[4] == get_text('status_wait'):
+            menu.add_command(label=get_text('menu_start'), command=lambda: self.resume_task(task_id))
             
         elif tree_type == "ok":
-            menu.add_command(label="📂 打开所在文件夹", command=lambda: self.open_folder(task_id))
+            menu.add_command(label=get_text('menu_open_dir'), command=lambda: self.open_folder(task_id))
             
         elif tree_type == "fail":
-            menu.add_command(label="🔄 重新下载 (断点续传)", command=lambda: self.resume_task(task_id))
+            menu.add_command(label=get_text('menu_re_dl'), command=lambda: self.resume_task(task_id))
 
         menu.post(event.x_root, event.y_root)
 
@@ -833,7 +1126,7 @@ class M3U8TaskApp:
             if self.tree_dl.exists(task_id): self.tree_dl.delete(task_id)
         except: pass
         
-        self.tree_dl.insert('', 'end', iid=task_id, values=(task_id, fname, "0%", "-", "正在恢复"))
+        self.tree_dl.insert('', 'end', iid=task_id, values=(task_id, fname, "0%", "-", get_text('status_resume')))
         
         # 抛入线程池
         self.executor.submit(self.download_worker, task_id, url, fname, spath)
@@ -859,16 +1152,23 @@ class M3U8TaskApp:
             # 👇 加上这一行！将 UI 的勾选状态真正写入配置字典
             self.config["enable_rules"] = self.enable_rules_var.get()
             
-            # 读取多行文本框里的内容 (从第1行第0个字符到结尾)
+            # 读取多行文本框里的内容
             self.config["custom_header"] = self.header_text.get("1.0", tk.END).strip()
             
-            self.save_config()
-            messagebox.showinfo("成功", "设置已保存！\n(部分设置将在下一次任务生效)")
-        except ValueError:
-            messagebox.showerror("错误", "请确保并发、线程、超时等输入均为有效数字！")
-
+            # --- 新增：保存语言设置，并判断是否需要提示重启 ---
+            old_lang = self.config.get("language", "auto")
+            new_lang = self.lang_map.get(self.lang_display_var.get(), "auto")
+            self.config["language"] = new_lang
             
-
+            self.save_config()
+            
+            if old_lang != new_lang:
+                messagebox.showinfo(get_text('msg_success'), get_text('msg_restart'))
+            else:
+                messagebox.showinfo(get_text('msg_success'), get_text('msg_save_ok'))
+                
+        except ValueError:
+            messagebox.showerror(get_text('msg_error'), get_text('msg_number_err'))
 
 if __name__ == "__main__":
     root = tk.Tk()
