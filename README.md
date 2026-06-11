@@ -93,7 +93,7 @@ This tool is for educational, local network testing, and personal backup purpose
 ---
 ## 📝 更新日志 (Changelog)
 ---
-### 🚀 V1.3.0 - 终极缝合引擎与体验闭环 | The Ultimate Muxing Engine & Experience Loop (2026.06.1X)
+### 🚀 V1.3.0 - 终极缝合引擎与体验闭环 | The Ultimate Muxing Engine & Experience Loop (2026.06.16)
 
 *本次更新在坚守“零臃肿”底线的前提下，赋予了 M-Fetch 处理外部碎片的降维打击能力。它现在不仅是一个纯粹的下载器，更是一个轻量级的流媒体本地处理中枢。*
 *This update grants M-Fetch the power to handle external scattered fragments while strictly maintaining our "zero-bloatware" baseline. It is now not just a pure downloader, but a lightweight local media processing hub.*
