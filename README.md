@@ -93,7 +93,7 @@ This tool is for educational, local network testing, and personal backup purpose
 ---
 ## 📝 更新日志 (Changelog)
 ---
-### 🚀 V1.3.0 - 终极缝合引擎与体验闭环 | The Ultimate Muxing Engine & Experience Loop (2026.06.0X)
+### 🚀 V1.3.0 - 终极缝合引擎与体验闭环 | The Ultimate Muxing Engine & Experience Loop (2026.06.1X)
 
 *本次更新在坚守“零臃肿”底线的前提下，赋予了 M-Fetch 处理外部碎片的降维打击能力。它现在不仅是一个纯粹的下载器，更是一个轻量级的流媒体本地处理中枢。*
 *This update grants M-Fetch the power to handle external scattered fragments while strictly maintaining our "zero-bloatware" baseline. It is now not just a pure downloader, but a lightweight local media processing hub.*
@@ -103,18 +103,24 @@ This tool is for educational, local network testing, and personal backup purpose
 #### ✨ 核心特性升级 | Core Feature Upgrades
 
 * **独立 TS 文件夹无损缝合 | Independent Lossless TS Merging**
-* **ZH:** 新增「合并外部 TS 文件夹」专属功能（位于高级设置）。完美拯救用迅雷等其他工具下载后散落一地的 TS 视频碎片。一键选中文件夹，后台静默输出完整 `.mp4`，补齐了本地视频处理的最后一块拼图。
-* **EN:** Introduced a dedicated "Merge External TS Folder" tool (located in Settings). Perfectly salvages scattered TS segments downloaded by other software like Thunder. Select a directory, and it instantly outputs a complete `.mp4` in the background, completing the ultimate local video workflow.
+    * **ZH:** 新增「合并外部 TS 文件夹」专属功能（位于高级设置）。完美拯救用迅雷等其他工具下载后散落一地的 TS 视频碎片。一键选中文件夹，后台静默输出完整 `.mp4`，补齐了本地视频处理的最后一块拼图。
+    * **EN:** Introduced a dedicated "Merge External TS Folder" tool (located in Settings). Perfectly salvages scattered TS segments downloaded by other software like Thunder. Select a directory, and it instantly outputs a complete `.mp4` in the background, completing the ultimate local video workflow.
 
+* **正则级广告切片拦截 | Regex-Powered Ad Segment Filtering**
+    * **ZH:** 饱受影视站牛皮癣广告折磨？高级设置新增「跳过分片规则」，支持利用正则表达式（如 `ad|promo`）在下载阶段犹如手术刀般自动丢弃广告切片，还你 100% 纯净正片。
+    * **EN:** Annoyed by inserted ads? Added a "Skip Segments" rule supporting regex (e.g., `ad|promo`). Surgically drops ad segments directly during the download phase, delivering a 100% clean video.
+
+* **全局网络限速引擎 | Global Bandwidth Speed Limit**
+    * **ZH:** 解决底层引擎多线程火力全开榨干家庭带宽的痛点。高级设置现已支持设定最高下载速度（Mbps），让后台挂机追剧真正做到零打扰、无感潜行。
+    * **EN:** Resolved the issue of multi-threaded engines draining your network. You can now set a maximum download speed (Mbps) in Advanced Settings, ensuring a truly silent and uninterrupted background experience.
 
 * **底层自然排序算法 | Natural Sort Algorithm**
-* **ZH:** 彻底终结传统的“1, 10, 2”乱序拼接惨剧。核心引擎现在能像人类一样正确读取分片序号（1, 2, 3... 10），确保 100% 完美连贯的物理级缝合。
-* **EN:** Completely eliminates the traditional "1, 10, 2" file disorder tragedy. The engine now reads segment sequences like a human (1, 2, 3... 10), ensuring 100% perfect, chronological physical splicing.
-
+    * **ZH:** 彻底终结传统的“1, 10, 2”乱序拼接惨剧。核心合并引擎现在能像人类一样正确读取分片序号（1, 2, 3... 10），确保 100% 完美连贯的物理级缝合。
+    * **EN:** Completely eliminates the traditional "1, 10, 2" file disorder tragedy. The merging engine now reads segment sequences like a human (1, 2, 3... 10), ensuring 100% perfect, chronological physical splicing.
 
 * **Copy 级免转码秒合引擎 | Zero-Transcoding Stream Copy**
-* **ZH:** 拒绝画蛇添足的二次压制。直接调用 FFmpeg 底层流复制（Stream Copy）技术，跳过漫长的解码重编过程。无论几十个G的碎片，几秒内即可原画质、原音质瞬间缝合完毕。
-* **EN:** No unnecessary and time-consuming re-encoding. Directly utilizes FFmpeg's low-level Stream Copy technology to losslessly mux gigabytes of fragments in seconds, preserving the exact original video and audio quality.
+    * **ZH:** 拒绝画蛇添足的二次压制。直接调用 FFmpeg 底层流复制（Stream Copy）技术，跳过漫长的解码重编过程。无论几十个 G 的碎片，几秒内即可原画质、原音质瞬间缝合完毕。
+    * **EN:** No unnecessary and time-consuming re-encoding. Directly utilizes FFmpeg's low-level Stream Copy technology to losslessly mux gigabytes of fragments in seconds, preserving the exact original video and audio quality.
 
 ---
 ### 🚀 V1.2.0 - 国际化双语支持与后台潜行模式 | Internationalization & Stealth Background Mode (2026.06.08)
