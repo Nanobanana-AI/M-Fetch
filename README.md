@@ -93,7 +93,7 @@ This tool is for educational, local network testing, and personal backup purpose
 ---
 ## 📝 更新日志 (Changelog)
 ---
-### 🚀 V1.3.0 - 终极缝合引擎与体验闭环 | The Ultimate Muxing Engine & Experience Loop (2026.06.10)
+### 🚀 V1.3.0 - 终极缝合引擎与体验闭环 | The Ultimate Muxing Engine & Experience Loop (2026.06.0X)
 
 *本次更新在坚守“零臃肿”底线的前提下，赋予了 M-Fetch 处理外部碎片的降维打击能力。它现在不仅是一个纯粹的下载器，更是一个轻量级的流媒体本地处理中枢。*
 *This update grants M-Fetch the power to handle external scattered fragments while strictly maintaining our "zero-bloatware" baseline. It is now not just a pure downloader, but a lightweight local media processing hub.*
@@ -117,7 +117,7 @@ This tool is for educational, local network testing, and personal backup purpose
 * **EN:** No unnecessary and time-consuming re-encoding. Directly utilizes FFmpeg's low-level Stream Copy technology to losslessly mux gigabytes of fragments in seconds, preserving the exact original video and audio quality.
 
 ---
-### 🚀 V1.2.0 - 国际化双语支持与后台潜行模式 | Internationalization & Stealth Background Mode (2026.06.8)
+### 🚀 V1.2.0 - 国际化双语支持与后台潜行模式 | Internationalization & Stealth Background Mode (2026.06.08)
 
 *本次更新将 M-Fetch 从纯粹的下载工具打磨成了无缝融入操作系统的生产力利器，并正式面向全球极客推出双语支持。*
 *This update refines M-Fetch from a pure downloading tool into a productivity weapon that seamlessly integrates into your OS, officially introducing bilingual support for geeks worldwide.*
