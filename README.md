@@ -122,7 +122,7 @@ This tool is for educational, local network testing, and personal backup purpose
 *本次更新将 M-Fetch 从纯粹的下载工具打磨成了无缝融入操作系统的生产力利器，并正式面向全球极客推出双语支持。*
 *This update refines M-Fetch from a pure downloading tool into a productivity weapon that seamlessly integrates into your OS, officially introducing bilingual support for geeks worldwide.*
 
----
+
 
 #### ✨ 核心特性升级 | Core Feature Upgrades
 
@@ -147,7 +147,7 @@ This tool is for educational, local network testing, and personal backup purpose
 *本次更新聚焦于重度用户的批量下载体验与底层网络穿透能力，进一步释放 N_m3u8DL-RE 内核的强大潜力。*
 *This update focuses on the batch download experience for heavy users and underlying network penetration capabilities, further unleashing the immense potential of the N_m3u8DL-RE core.*
 
----
+
 
 #### ✨ 核心特性升级 | Core Feature Upgrades
 
