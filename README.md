@@ -28,7 +28,8 @@
 
 
 
-👉 **[访问官方中文主页获取详细指南与网盘通道](https://okqiyi.com/m-fetch/)**
+👉 **[访问官方中文主页获取详细指南与网盘通道](https://okqiyi.com/m-fetch/)**<br>
+👉 **[Visit the Official English Homepage for Guide & Download](https://okqiyi.com/free-m3u8-downloader-m-fetch/)**<br>
 
 ## ✨ Core Features (核心特性)
 - 📦 **Portable & Clean (绿色免安装)**: Unzip and run. No registry writing, no background services. Auto-cleans log files.<br>
