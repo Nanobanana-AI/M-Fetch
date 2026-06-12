@@ -110,9 +110,9 @@ This tool is for educational, local network testing, and personal backup purpose
     * **ZH:** 饱受影视站牛皮癣广告折磨？高级设置新增「跳过分片规则」，支持利用正则表达式（如 `ad|promo`）在下载阶段犹如手术刀般自动丢弃广告切片，还你 100% 纯净正片。
     * **EN:** Annoyed by inserted ads? Added a "Skip Segments" rule supporting regex (e.g., `ad|promo`). Surgically drops ad segments directly during the download phase, delivering a 100% clean video.
 
-* **全局网络限速引擎 | Global Bandwidth Speed Limit**
-    * **ZH:** 解决底层引擎多线程火力全开榨干家庭带宽的痛点。高级设置现已支持设定最高下载速度（Mbps），让后台挂机追剧真正做到零打扰、无感潜行。
-    * **EN:** Resolved the issue of multi-threaded engines draining your network. You can now set a maximum download speed (Mbps) in Advanced Settings, ensuring a truly silent and uninterrupted background experience.
+* **精准单任务限速 | Precise Per-Task Speed Limit**
+    * **ZH:** 解决单一任务底层多线程火力全开榨干家庭带宽的痛点。高级设置现已支持精确到“单任务”的最高下载速度限制（Mbps）。配合多任务并发队列，实现更细腻的网络资源分配，让后台挂机追剧真正做到零打扰、无感潜行。
+    * **EN:** Prevent a single multi-threaded task from draining your entire network. You can now set a precise speed limit (Mbps) for individual tasks in Advanced Settings. Combined with the concurrent task queue, it delivers smarter bandwidth management for a completely silent background experience.
 
 * **底层自然排序算法 | Natural Sort Algorithm**
     * **ZH:** 彻底终结传统的“1, 10, 2”乱序拼接惨剧。核心合并引擎现在能像人类一样正确读取分片序号（1, 2, 3... 10），确保 100% 完美连贯的物理级缝合。
