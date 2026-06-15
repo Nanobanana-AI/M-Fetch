@@ -22,7 +22,8 @@
 
 
 
-https://github.com/user-attachments/assets/0ebdb88b-5e98-4eff-94a3-ef10ed191488
+<img width="426" height="240" alt="6月15日(1)" src="https://github.com/user-attachments/assets/dc856f4d-0a2a-4248-a8a9-cabe1b0929f4" />
+
 
 
 
