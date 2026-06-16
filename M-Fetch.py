@@ -4,7 +4,7 @@
 """
 =============================================================================
 Project     : M-Fetch (极简 M3U8 下载器)
-Version     : 1.2.0
+Version     : 1.3.0
 Description : A minimalist, ad-free, bilingual M3U8 & Streaming downloader 
               GUI based on N_m3u8DL-RE and FFmpeg.
 Author      : Okqiyi (https://github.com/Nanobanana-AI/M-Fetch)
@@ -55,7 +55,7 @@ LANG = get_sys_language()
 
 UI_TEXT = {
     'zh_CN': {
-        'title': "M-Fetch | 极简 M3U8 下载器 V1.2.0",
+        'title': "M-Fetch | 极简 M3U8 下载器 V1.3.0",
         'url_label': "下载地址:",
         'name_label': "保存文件:",
         'path_label': "保存路径:",
@@ -82,6 +82,7 @@ UI_TEXT = {
         'set_thread_count': "单任务下载线程:",
         'set_timeout': "网络超时阀值(秒):",
         'set_retry': "失败重试次数:",
+        'set_max_speed': "单任务限速 (Mbps, 0为不限):",  
         'set_file_handle': "文件处理 ",
         'set_skip_merge': "下载后保留原始 TS 分片 (不合并 MP4)",
         'set_network': "网络与请求 ",
@@ -98,11 +99,11 @@ UI_TEXT = {
         'about_desc': (
             "本软件为纯粹的效率工具，基于 N_m3u8DL-RE 强力内核构建。\n"
             "主打极简、秒开、无感后台运行与批量断点续传。\n"
-            "【V1.2.0 核心升级】\n"
-            "新增中英双语智能切换，并完美适配了国际化界面的极简排版。\n"
+            "【V1.3.0 核心升级】\n"
+            "新增合并外部TS文件夹，广告过滤、全局限速功能。\n"
             "如果您觉得这款工具为您节省了宝贵的时间，\n"
             "欢迎扫码请开发者喝杯咖啡 ☕ \n"
-            "2026年6月6日"
+            "2026年6月16日"
         ),
         'about_github': "👉 访问 GitHub 获取最新源码与完整更新日志",
         'about_site': "🌐 访问作者官网：okqiyi.com",
@@ -131,6 +132,14 @@ UI_TEXT = {
         'menu_open_dir': "📂 打开所在文件夹",
         'menu_re_dl': "🔄 重新下载 (断点续传)",
         'dialog_sel_dir': "选择默认保存目录",
+        'btn_merge_ts': "🧰 合并外部 TS 文件夹",
+        'dialog_sel_ts': "请选择包含 TS 分片的文件夹",
+        'msg_merge_none': "该文件夹下没有找到任何 .ts 文件！",
+        'msg_merge_ok': "合并完成！\n已在原目录生成: ",
+        'msg_merge_fail': "合并失败:\n",
+        'set_ad_filter_title': "广告过滤 (Ad Filter)",
+        'set_ad_filter': "跳过分片规则 (正则):",
+        'set_ad_filter_hint': "(例如输入 ad|promo 自动丢弃带广告的 TS 切片)",
         'tray_restore': "显示主界面",
         'tray_quit': "完全退出",
         'tray_hover': "M-Fetch 后台运行中",
@@ -146,7 +155,7 @@ UI_TEXT = {
         )
     },
     'en_US': {
-        'title': "M-Fetch | Minimalist M3U8 Downloader V1.2.0",
+        'title': "M-Fetch | Minimalist M3U8 Downloader V1.3.0",
         'url_label': "Download URL:",
         'name_label': "File Name:",
         'path_label': "Save Path:",
@@ -173,6 +182,7 @@ UI_TEXT = {
         'set_thread_count': "Threads per Task:",
         'set_timeout': "Network Timeout (s):",
         'set_retry': "Retry Count:",
+        'set_max_speed': "Per-Task Speed Limit (Mbps, 0=unlimited):", 
         'set_file_handle': "File Handling ",
         'set_skip_merge': "Keep original TS segments (Do not merge to MP4)",
         'set_network': "Network & Requests ",
@@ -189,11 +199,11 @@ UI_TEXT = {
         'about_desc': (
             "A minimalist, ad-free efficiency tool based on N_m3u8DL-RE.\n"
             "Features background running, batch downloading, and resumable tasks.\n"
-            "[V1.2.0 Core Updates]\n"
-            "Introduces smart bilingual support (EN/CN) and optimizes UI layouts for international users.\n"
+            "[V1.3.0 Core Updates]\n"
+            "Added 'Merge External TS', Ad Filter & Global Speed Limit.\n"
             "If this tool saved your precious time,\n"
             "consider buying the developer a coffee ☕ \n"
-            "June 6, 2026"
+            "June 16, 2026"
         ),
         'about_github': "👉 Visit GitHub for source code & updates",
         'about_site': "🌐 Official Website: okqiyi.com",
@@ -222,6 +232,14 @@ UI_TEXT = {
         'menu_open_dir': "📂 Open Folder",
         'menu_re_dl': "🔄 Restart (Resume)",
         'dialog_sel_dir': "Select Default Save Directory",
+        'btn_merge_ts': "🧰 Merge External TS Folder",
+        'dialog_sel_ts': "Select folder containing TS segments",
+        'msg_merge_none': "No .ts files found in this directory!",
+        'msg_merge_ok': "Merged successfully!\nSaved as: ",
+        'msg_merge_fail': "Merge failed:\n",
+        'set_ad_filter_title': "Ad Filtering",
+        'set_ad_filter': "Skip Segments (Regex):",
+        'set_ad_filter_hint': "(e.g., input ad|promo to drop ad TS segments)",
         'tray_restore': "Show Main Window",
         'tray_quit': "Quit M-Fetch",
         'tray_hover': "M-Fetch is running in background",
@@ -284,6 +302,16 @@ class M3U8TaskApp:
         # --- 新增：接管最小化按钮 (-) 和 关闭按钮 (X) ---
         self.root.bind("<Unmap>", self.on_unmap)
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
+        
+        # 启动剪贴板监听
+        self.monitor_clipboard()
+        
+        # --- 新增：定义当前版本并启动无感版本检测 ---
+        self.current_version = "v1.3.0"
+        self.check_for_updates()
+        
+        # --- 新增：接管最小化按钮 (-) 和 关闭按钮 (X) ---
+        self.root.bind("<Unmap>", self.on_unmap)
         
     def get_system_proxy_url(self):
         """自动探测并获取 Windows 系统当前的代理地址"""
@@ -386,6 +414,7 @@ class M3U8TaskApp:
             "thread_count": 4,           # 单任务底层下载线程数
             "timeout": 30,               # 超时时间(秒)
             "retry_count": 3,             # 失败重试次数
+            "max_speed": 0,             # <--- 新增：默认 0 为不限速
             "custom_header": "",        # <--- 新增：自定义请求头
             "skip_merge": False,    # <--- 新增：默认不跳过，也就是默认会合并成 MP4
             "enable_rules": False,       # 👇 加上这行：给规则文件一个默认不开启的初始状态
@@ -543,104 +572,122 @@ class M3U8TaskApp:
         self.canvas_set.bind('<Enter>', lambda e: self.canvas_set.bind_all("<MouseWheel>", _on_mousewheel))
         self.canvas_set.bind('<Leave>', lambda e: self.canvas_set.unbind_all("<MouseWheel>"))
 
-        # 动态生成输入框并保存引用
-        self.setting_vars = {}
-        labels = {"max_workers": get_text('set_max_workers'), "thread_count": get_text('set_thread_count'), 
-                  "timeout": get_text('set_timeout'), "retry_count": get_text('set_retry')}
-        
-        for i, (key, label_text) in enumerate(labels.items()):
-            tk.Label(self.scrollable_frame, text=label_text).grid(row=i, column=0, padx=20, pady=12, sticky="w")
-            var = tk.StringVar(value=str(self.config.get(key, self.default_config[key])))
-            tk.Entry(self.scrollable_frame, textvariable=var, width=20).grid(row=i, column=1, padx=10, pady=12)
-            self.setting_vars[key] = var
-        
-        # --- 文件处理选项  ---
-        ttk.Separator(self.scrollable_frame, orient='horizontal').grid(row=4, column=0, columnspan=2, sticky="ew", pady=10, padx=10)
-        tk.Label(self.scrollable_frame, text=get_text('set_file_handle'), fg="#2196F3", font=("", 9, "bold")).grid(row=5, column=0, columnspan=2, sticky="w", padx=15, pady=5)
-        
-        self.skip_merge_var = tk.BooleanVar(value=self.config.get("skip_merge", False))
-        ttk.Checkbutton(self.scrollable_frame, text=get_text('set_skip_merge'), 
-                        variable=self.skip_merge_var).grid(row=6, column=0, columnspan=2, padx=20, pady=5, sticky="w")
-
-        # --- 网络与请求设置  ---
-        ttk.Separator(self.scrollable_frame, orient='horizontal').grid(row=7, column=0, columnspan=2, sticky="ew", pady=10, padx=10)
-        tk.Label(self.scrollable_frame, text=get_text('set_network'), fg="#2196F3", font=("", 9, "bold")).grid(row=8, column=0, columnspan=2, sticky="w", padx=15, pady=5)
-
-        # 1. 自定义表头 (Headers) - 升级为多行支持
-        # 注意这里的 sticky 改成了 "nw"，让文字跟文本框顶部对齐
-        tk.Label(self.scrollable_frame, text=get_text('set_headers'), fg="#333").grid(row=9, column=0, padx=20, pady=8, sticky="nw")
-        
-        # 使用 Text 控件代替 Entry，height=3 表示默认显示 3 行高度
-        self.header_text = tk.Text(self.scrollable_frame, width=40, height=3, font=("Microsoft YaHei", 9))
-        self.header_text.grid(row=9, column=1, padx=10, pady=8, sticky="w")
-        # Text 控件没有 textvariable，需要手动插入初始值
-        self.header_text.insert("1.0", self.config.get("custom_header", "")) 
-        
-        # 升级提示语，展示多行示例
-        tk.Label(self.scrollable_frame, text=get_text('set_headers_hint'), 
-                 fg="gray", font=("", 8), justify="left").grid(row=10, column=1, sticky="nw", padx=10, pady=(0, 5))
-                 
-                 
-        # 3. 外部规则文件
-        self.enable_rules_var = tk.BooleanVar(value=self.config.get("enable_rules", False))
-        ttk.Checkbutton(self.scrollable_frame, text=get_text('set_rules'), 
-                        variable=self.enable_rules_var).grid(row=12, column=0, columnspan=2, padx=20, pady=(5, 0), sticky="w")
-        
-        # --- 新增：灰色的规则文件格式说明 (改为可复制的 Text 控件) ---
-        rules_hint = get_text('rules_hint')
-        
-        # 使用 Text 控件替代 Label，去掉边框 (bd=0)，背景色设为与窗口一致的浅灰色
-        hint_box = tk.Text(self.scrollable_frame, height=7, width=65, bg="#f0f0f0", bd=0, fg="gray", font=("", 8))
-        hint_box.grid(row=13, column=0, columnspan=2, sticky="w", padx=40, pady=(0, 10))
-        hint_box.insert("1.0", rules_hint)
-        
-        # 核心黑科技：拦截除了 Ctrl+C (复制) 之外的所有键盘输入，实现“只读可复制”
-        hint_box.bind("<Key>", lambda e: "break" if not (e.state & 4 and e.keysym.lower() == 'c') else None)   
-        
+       # ==========================================
+        # 1. 全局与基础设置 (Global Settings)
         # ==========================================
-        # --- 新增：语言切换下拉框 ---
-        # ==========================================
-        ttk.Separator(self.scrollable_frame, orient='horizontal').grid(row=14, column=0, columnspan=2, sticky="ew", pady=10, padx=10)
-        tk.Label(self.scrollable_frame, text=get_text('set_language'), fg="#333").grid(row=15, column=0, padx=20, pady=8, sticky="w")
+        current_row = 0  # 引入自动行号机制，后续插入极其方便
         
-        # 建立语言字典映射
-        self.lang_map = {
-            get_text('lang_auto'): "auto",
-            "简体中文": "zh_CN",
-            "English": "en_US"
-        }
+        # --- 界面语言 ---
+        tk.Label(self.scrollable_frame, text=get_text('set_language'), fg="#333").grid(row=current_row, column=0, padx=20, pady=8, sticky="w")
+        self.lang_map = {get_text('lang_auto'): "auto", "简体中文": "zh_CN", "English": "en_US"}
         self.reverse_lang_map = {v: k for k, v in self.lang_map.items()}
-        
-        # 读取当前配置并转换为显示文字
         current_lang_val = self.config.get("language", "auto")
-        display_val = self.reverse_lang_map.get(current_lang_val, get_text('lang_auto'))
-        
-        self.lang_display_var = tk.StringVar(value=display_val)
+        self.lang_display_var = tk.StringVar(value=self.reverse_lang_map.get(current_lang_val, get_text('lang_auto')))
         lang_combo = ttk.Combobox(self.scrollable_frame, textvariable=self.lang_display_var, state="readonly", width=18)
         lang_combo['values'] = list(self.lang_map.keys())
-        lang_combo.grid(row=15, column=1, padx=10, pady=8, sticky="w")
+        lang_combo.grid(row=current_row, column=1, padx=10, pady=8, sticky="w")
+        current_row += 1
 
-        # 2. 代理设置
-        tk.Label(self.scrollable_frame, text=get_text('set_proxy'), fg="#333").grid(row=11, column=0, padx=20, pady=8, sticky="w")
+        ttk.Separator(self.scrollable_frame, orient='horizontal').grid(row=current_row, column=0, columnspan=2, sticky="ew", pady=10, padx=10)
+        current_row += 1
+
+        # --- 基础下载参数 ---
+        self.setting_vars = {}
+        labels = {"max_workers": get_text('set_max_workers'), "thread_count": get_text('set_thread_count'), 
+                  "timeout": get_text('set_timeout'), "retry_count": get_text('set_retry'),
+                  "max_speed": get_text('set_max_speed')}  # <--- 加上这个键值对
         
+        for key, label_text in labels.items():
+            tk.Label(self.scrollable_frame, text=label_text).grid(row=current_row, column=0, padx=20, pady=12, sticky="w")
+            var = tk.StringVar(value=str(self.config.get(key, self.default_config[key])))
+            tk.Entry(self.scrollable_frame, textvariable=var, width=20).grid(row=current_row, column=1, padx=10, pady=12, sticky="w")
+            self.setting_vars[key] = var
+            current_row += 1
+
+        # ==========================================
+        # 2. 文件处理 (File Handling)
+        # ==========================================
+        ttk.Separator(self.scrollable_frame, orient='horizontal').grid(row=current_row, column=0, columnspan=2, sticky="ew", pady=10, padx=10)
+        current_row += 1
+        
+        tk.Label(self.scrollable_frame, text=get_text('set_file_handle'), fg="#2196F3", font=("", 9, "bold")).grid(row=current_row, column=0, columnspan=2, sticky="w", padx=15, pady=5)
+        current_row += 1
+        
+        file_frame = tk.Frame(self.scrollable_frame)
+        file_frame.grid(row=current_row, column=0, columnspan=2, sticky="w", padx=20, pady=5)
+        self.skip_merge_var = tk.BooleanVar(value=self.config.get("skip_merge", False))
+        ttk.Checkbutton(file_frame, text=get_text('set_skip_merge'), variable=self.skip_merge_var).pack(side="left")
+        
+        self.btn_merge_ui = tk.Button(file_frame, text=get_text('btn_merge_ts'), cursor="hand2", command=self.merge_external_ts)
+        self.btn_merge_ui.pack(side="left", padx=25)
+        current_row += 1
+
+        # ==========================================
+        # 3. 网络与进阶突破 (Network & Hacks)
+        # ==========================================
+        ttk.Separator(self.scrollable_frame, orient='horizontal').grid(row=current_row, column=0, columnspan=2, sticky="ew", pady=10, padx=10)
+        current_row += 1
+        
+        tk.Label(self.scrollable_frame, text=get_text('set_network'), fg="#2196F3", font=("", 9, "bold")).grid(row=current_row, column=0, columnspan=2, sticky="w", padx=15, pady=5)
+        current_row += 1
+
+        # --- 本地代理 ---
+        tk.Label(self.scrollable_frame, text=get_text('set_proxy'), fg="#333").grid(row=current_row, column=0, padx=20, pady=8, sticky="w")
         proxy_frame = tk.Frame(self.scrollable_frame)
-        proxy_frame.grid(row=11, column=1, padx=10, pady=8, sticky="w")
-        
+        proxy_frame.grid(row=current_row, column=1, padx=10, pady=8, sticky="w")
         self.use_proxy_var = tk.BooleanVar(value=self.config.get("use_proxy", False))
         ttk.Checkbutton(proxy_frame, text=get_text('set_proxy_enable'), variable=self.use_proxy_var).pack(side="left")
-        
-        
         self.proxy_url_var = tk.StringVar(value=self.config.get("proxy_url", ""))
         tk.Entry(proxy_frame, textvariable=self.proxy_url_var, width=32).pack(side="left", padx=10)
-        
+        current_row += 1
+
+        # --- 自定义请求头 ---
+        tk.Label(self.scrollable_frame, text=get_text('set_headers'), fg="#333").grid(row=current_row, column=0, padx=20, pady=8, sticky="nw")
+        self.header_text = tk.Text(self.scrollable_frame, width=40, height=3, font=("Microsoft YaHei", 9))
+        self.header_text.grid(row=current_row, column=1, padx=10, pady=8, sticky="w")
+        self.header_text.insert("1.0", self.config.get("custom_header", "")) 
+        current_row += 1
+        tk.Label(self.scrollable_frame, text=get_text('set_headers_hint'), fg="gray", font=("", 8), justify="left").grid(row=current_row, column=1, sticky="nw", padx=10, pady=(0, 5))
+        current_row += 1
+
+        # --- 广告过滤 (紧跟网络请求之下，去掉了多余的蓝色大标题) ---
+        tk.Label(self.scrollable_frame, text=get_text('set_ad_filter'), fg="#333").grid(row=current_row, column=0, padx=20, pady=8, sticky="w")
+        self.ad_filter_var = tk.StringVar(value=self.config.get("ad_filter", ""))
+        tk.Entry(self.scrollable_frame, textvariable=self.ad_filter_var, width=40).grid(row=current_row, column=1, padx=10, pady=8, sticky="w")
+        current_row += 1
+        tk.Label(self.scrollable_frame, text=get_text('set_ad_filter_hint'), fg="gray", font=("", 8)).grid(row=current_row, column=1, sticky="nw", padx=10, pady=(0, 10))
+        current_row += 1
+
+        # --- 外部规则库文件 ---
+        self.enable_rules_var = tk.BooleanVar(value=self.config.get("enable_rules", False))
+        ttk.Checkbutton(self.scrollable_frame, text=get_text('set_rules'), variable=self.enable_rules_var).grid(row=current_row, column=0, columnspan=2, padx=20, pady=(5, 0), sticky="w")
+        current_row += 1
+        rules_hint = get_text('rules_hint')
+        hint_box = tk.Text(self.scrollable_frame, height=7, width=65, bg="#f0f0f0", bd=0, fg="gray", font=("", 8))
+        hint_box.grid(row=current_row, column=0, columnspan=2, sticky="w", padx=40, pady=(0, 10))
+        hint_box.insert("1.0", rules_hint)
+        hint_box.bind("<Key>", lambda e: "break" if not (e.state & 4 and e.keysym.lower() == 'c') else None)   
+        current_row += 1
 
         # 底部两个功能按钮 (固定在 Tab 最下方，不随内容滑动)
         tk.Button(self.frame_settings, text=get_text('btn_reset'), command=self.restore_settings).place(x=340, y=225, width=100, height=30)
-        tk.Button(self.frame_settings, text=get_text('btn_save'), bg="#2196F3", fg="white", command=self.apply_settings).place(x=460, y=225, width=100, height=30)
+        tk.Button(self.frame_settings, text=get_text('btn_save'), bg="#2196F3", fg="white", command=self.apply_settings).place(x=460, y=225, width=100, height=30) 
 
        # 5. 关于与赞赏 Tab
         self.frame_about = ttk.Frame(self.notebook)
-        self.notebook.add(self.frame_about, text=get_text('tab_about'))
+        
+        # --- 新增：默认加载暗色灯泡 (bulb_off.png) ---
+        active_lang = self.config.get("language", "auto")
+        if active_lang == "auto": active_lang = LANG
+        clean_tab_text = " 关于 " if active_lang == "zh_CN" else " About "
+        
+        try:
+            # 必须绑定为 self.bulb_off_icon 防止被内存回收
+            self.bulb_off_icon = tk.PhotoImage(file=resource_path("bulb_off.png"))
+            self.notebook.add(self.frame_about, text=clean_tab_text, image=self.bulb_off_icon, compound="left")
+        except Exception:
+            # 容错：万一打包时忘了放图片，退回原版的 Unicode 文字兜底
+            self.notebook.add(self.frame_about, text=get_text('tab_about'))
 
         # 增加 Canvas 和 Scrollbar 支持滑动
         self.canvas_about = tk.Canvas(self.frame_about, highlightthickness=0)
@@ -677,6 +724,7 @@ class M3U8TaskApp:
         # 创建一个左侧容器来垂直排列文字和链接
         left_container = tk.Frame(about_container)
         left_container.pack(side="left", padx=(0, 30), pady=10, fill="y")
+        self.about_left_container = left_container # <-- 新增：保存容器引用，方便后续跨函数插入更新提示
         
         text_label = tk.Label(left_container, text=about_text, justify="left", fg="#333", font=("Microsoft YaHei", 10))
         text_label.pack(anchor="w")
@@ -875,6 +923,11 @@ class M3U8TaskApp:
             "--auto-select"  # 遇到多画质菜单时，自动选择最高画质，不要等待人工确认
         ]
         
+        # --- 新增：全局网络限速 ---
+        max_speed = self.config.get("max_speed", 0)
+        if max_speed > 0:
+            cmd.extend(["--max-speed", f"{max_speed}M"])
+            
         # --- 新增：如果开启了代理，强制引擎走自定义代理 ---
         if self.config.get("use_proxy") and self.config.get("proxy_url"):
             cmd.extend(["--custom-proxy", self.config.get("proxy_url")])
@@ -942,6 +995,11 @@ class M3U8TaskApp:
         # --- 新增：如果勾选了不合并，则向引擎发送跳过指令 ---
         if self.config.get("skip_merge"):
             cmd.extend(["--skip-merge"])
+        # --- 新增：广告分片正则拦截引擎 ---
+        ad_filter_rule = self.config.get("ad_filter", "").strip()
+        if ad_filter_rule:
+            # 直接调用底层引擎的关键字过滤参数，支持正则
+            cmd.extend(["--ad-keyword", ad_filter_rule])    
         
         try:
             startupinfo = None
@@ -1137,7 +1195,142 @@ class M3U8TaskApp:
         row = self.cursor.fetchone()
         if row and os.path.exists(row[0]):
             os.startfile(row[0])
+     
+    def merge_external_ts(self):
+        """核心组件：合并任意外部 TS 文件夹，支持自然排序算法防乱序"""
+        # 1. 弹出系统选择框
+        target_dir = filedialog.askdirectory(title=get_text('dialog_sel_ts'))
+        if not target_dir: 
+            return
+
+        # 2. 扫盘检索所有 .ts 文件
+        ts_files = [f for f in os.listdir(target_dir) if f.lower().endswith('.ts')]
+        if not ts_files:
+            messagebox.showwarning(get_text('msg_tips'), get_text('msg_merge_none'), parent=self.root)
+            return
+
+        # 3. 引入自然排序算法 (Natural Sort)
+        def natural_sort_key(s):
+            return [int(text) if text.isdigit() else text.lower() for text in re.split('([0-9]+)', s)]
+        ts_files.sort(key=natural_sort_key)
+
+        # 4. 生成 FFmpeg 专用的 concat 索引清单
+        concat_file = os.path.join(target_dir, 'mfetch_concat_tmp.txt')
+        try:
+            with open(concat_file, 'w', encoding='utf-8') as f:
+                for ts in ts_files:
+                    f.write(f"file '{ts}'\n")
+        except Exception as e:
+            messagebox.showerror(get_text('msg_error'), str(e), parent=self.root)
+            return
+
+        folder_name = os.path.basename(target_dir)
+        if not folder_name: 
+            folder_name = "Merged_Video"
+        output_mp4 = os.path.join(target_dir, f"{folder_name}.mp4")
+
+        # --- 增加 UI 视觉反馈：变灰并提示合并中 ---
+        self.btn_merge_ui.config(text="⏳ 合并中...", state="disabled")
+        self.root.update()
+
+        # 5. 放入独立线程执行后台静默缝合
+        def process():
+            ffmpeg_path = resource_path(r"tools\ffmpeg.exe")
+            if not os.path.exists(ffmpeg_path):
+                ffmpeg_path = "ffmpeg"
+
+            cmd = [
+                ffmpeg_path,
+                "-y",                   
+                "-f", "concat",         
+                "-safe", "0",           
+                "-i", concat_file,      
+                "-c", "copy",           
+                output_mp4
+            ]
             
+            startupinfo = None
+            if os.name == 'nt':
+                startupinfo = subprocess.STARTUPINFO()
+                startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+            try:
+                # 【核心修复】：必须指定 cwd 为目标文件夹，否则 ffmpeg 找不到分片
+                subprocess.run(cmd, startupinfo=startupinfo, check=True, cwd=target_dir)
+                os.remove(concat_file) 
+                
+                # 恢复按钮状态并弹窗 (加入 parent 防止被挡住)
+                self.root.after(0, lambda: [
+                    self.btn_merge_ui.config(text=get_text('btn_merge_ts'), state="normal"),
+                    messagebox.showinfo(get_text('msg_success'), get_text('msg_merge_ok') + f"{folder_name}.mp4", parent=self.root)
+                ])
+            except Exception as e:
+                self.root.after(0, lambda: [
+                    self.btn_merge_ui.config(text=get_text('btn_merge_ts'), state="normal"),
+                    messagebox.showerror(get_text('msg_error'), get_text('msg_merge_fail') + str(e), parent=self.root)
+                ])
+
+        threading.Thread(target=process, daemon=True).start()
+     
+    def check_for_updates(self):
+        """后台静默检测 GitHub 最新版本"""
+        def _check():
+            try:
+                # 零成本白嫖 GitHub 的 API
+                req = urllib.request.Request("https://api.github.com/repos/Nanobanana-AI/M-Fetch/releases/latest")
+                req.add_header('User-Agent', 'M-Fetch-App')
+                with urllib.request.urlopen(req, timeout=5) as response:
+                    data = json.loads(response.read().decode())
+                    latest_version = data.get("tag_name", "")
+                    
+                    if latest_version:
+                        import re
+                        # 将字符串版本号转化为整数列表，例如 "v1.3.0" -> [1, 3, 0]
+                        def parse_version(v_str):
+                            return [int(x) for x in re.findall(r'\d+', v_str)]
+                            
+                        # 真正的版本号大小判定：只有线上版本 大于 当前版本时，才触发提示
+                        if parse_version(latest_version) > parse_version(self.current_version):
+                            # 涉及修改 UI，必须通过 self.root.after 丢给主线程执行
+                            self.root.after(0, self.show_update_notification, latest_version)
+            except Exception:
+                # 如果用户没联网或者 API 访问受限，默默当作无事发生，绝不报错卡死
+                pass 
+
+        threading.Thread(target=_check, daemon=True).start()
+
+    def show_update_notification(self, latest_version):
+        """后台检测到更新：点亮彩色灯泡并在左侧插入超链接"""
+        active_lang = self.config.get("language", "auto")
+        if active_lang == "auto":
+            active_lang = LANG
+            
+        # 1. 尝试加载点亮的灯泡 (bulb_on.png) 并替换 Tab 图标
+        try:
+            self.bulb_on_icon = tk.PhotoImage(file=resource_path("bulb_on.png"))
+            clean_tab_text = " 关于 " if active_lang == "zh_CN" else " About "
+            self.notebook.tab(self.frame_about, text=clean_tab_text, image=self.bulb_on_icon, compound="left")
+        except Exception:
+            pass # 如果没图片，保持现状，不报错
+        
+        # 2. 动态分配提示文案与目标跳转网址 (多语言路由)
+        if active_lang == "zh_CN":
+            tips_text = f"🚀 发现最新版本 {latest_version}，点击前往获取！"
+            target_url = "https://okqiyi.com/m-fetch/"  # 中文导向中文官网
+        else:
+            tips_text = f"🚀 New version {latest_version} available! Click to update."
+            target_url = "https://github.com/Nanobanana-AI/M-Fetch/releases/latest"  # 英文直接导向 GitHub 最新发布页
+        
+        update_label = tk.Label(self.about_left_container, 
+                                text=tips_text, 
+                                fg="#E91E63", 
+                                font=("Microsoft YaHei", 9, "bold", "underline"), 
+                                cursor="hand2")
+                                
+        update_label.pack(anchor="w", pady=(10, 0))
+        # 绑定点击事件，打开分配好的专属 URL
+        update_label.bind("<Button-1>", lambda e: webbrowser.open(target_url))
+        
     def apply_settings(self):
         """保存设置选项卡中的配置"""
         try:
@@ -1154,6 +1347,8 @@ class M3U8TaskApp:
             
             # 读取多行文本框里的内容
             self.config["custom_header"] = self.header_text.get("1.0", tk.END).strip()
+            # 保存广告过滤正则
+            self.config["ad_filter"] = self.ad_filter_var.get().strip()
             
             # --- 新增：保存语言设置，并判断是否需要提示重启 ---
             old_lang = self.config.get("language", "auto")
