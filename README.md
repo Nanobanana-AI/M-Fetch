@@ -100,6 +100,42 @@ This tool is for educational, local network testing, and personal backup purpose
 ---
 ## 📝 更新日志 (Changelog)
 ---
+🚀 V1.4.0 - 无感后台与物理级掌控 | Silent Background & Physical Control (2026.06.30)
+本次更新将“效率工具”的体验推向了极致。M-Fetch V1.4.0 彻底打通了与 Windows 底层的交互，实现了真正的无感潜行与绝对的进程掌控。配合全新升级的 .NET 10 底层核心，带来前所未有的丝滑下载体验。
+This update pushes the efficiency tool experience to its absolute peak. M-Fetch V1.4.0 thoroughly bridges the gap with the Windows OS, achieving true silent background running and absolute process control. Powered by the newly updated .NET 10 core engine, it delivers an unprecedented, buttery-smooth downloading experience.
+
+✨ 核心特性升级 | Core Feature Upgrades
+原生任务栏与托盘映射 | Native Taskbar & Tray Mapping
+
+ZH: 新增原生任务栏进度绿条映射与右下角托盘动态悬浮。最小化主窗口即可物理级隐藏，鼠标悬浮托盘即可实时查看挂机状态；配合任务栏进度条的极速重绘消退，彻底告别“不知死活”的盲猜状态，打造极致的无感潜行体验。
+
+EN: Introduced native taskbar green progress mapping and dynamic system tray hovering. Minimize the window for physical hiding, and hover over the tray icon to monitor active tasks in real-time. Paired with instantly vanishing progress bars upon completion, it eliminates guesswork, delivering the ultimate silent background experience.
+
+物理级进程纯净挂起 | Physical-Level Process Pause & Resume
+
+ZH: 拒绝流氓内存修改！全新加入「全部暂停/开始」与「单任务右键启停」。利用物理截断底层进程与 .tmp 分片缓存复用的黑科技，实现绝对纯净的挂起与完美的断点续传。随时为高优先级任务让速，断流卡死一键重启，不留任何后台僵尸进程。
+
+EN: Say no to invasive memory hacks! Introducing one-click "Pause/Start All" and "Right-click Single Task Control". Utilizing a hardcore combo of physical process termination and .tmp cache reuse, it achieves absolutely clean suspension and perfect resumability. Make way for high-priority tasks instantly, leaving zero zombie processes behind.
+
+底层引擎同步跃升 v0.6.0 | Core Engine Upgraded to v0.6.0
+
+ZH: 核心下载引擎强力同步至最新的 N_m3u8DL-RE v0.6.0-beta 版本。得益于 .NET 10 的先进代码裁剪技术，核心体积锐减 23% 且启动更快。自带文件系统级防爆头优化，完美修复并发日志冲突与超长文件名报错，稳定性全面狂飙。
+
+EN: The core download engine is powerfully synced with the latest N_m3u8DL-RE v0.6.0-beta. Thanks to .NET 10's advanced code trimming, core size is reduced by 23% and boots faster. Perfectly fixes concurrent log conflicts and over-long filename errors, bringing a massive leap in stability and resource efficiency.
+
+智能正则防死锁解析 | Smart Regex & Deadlock-Free Parser
+
+ZH: 为适配新版底层无换行符的极端“粘连输出”，独家重写了“碎肉机式按块读取”与智能正则提取引擎。无视任何排版刺客与 Kbps 码率干扰，毫秒级精准捕获最新 MBps 速率与百分比，让 UI 进度反馈如丝般顺滑。
+
+EN: To adapt to the new engine's extreme newline-free "sticky output", we exclusively rewrote a "meat-grinder block-reading" and smart regex extraction engine. Ignoring any layout glitches or Kbps bitrate interference, it accurately captures the latest MBps rates and percentages in milliseconds, keeping the UI progress feedback buttery smooth.
+
+主干路径防伪重拦截 | Main-Trunk Duplicate Prevention
+
+ZH: 升级了智能防重复机制。现在会自动剥离 M3U8 链接尾部那些花里胡哨的动态 Token 和时间戳，直击主干路径进行模糊排重，从底层彻底免疫各种动态防盗链机制带来的“重复下载”问题。
+
+EN: Upgraded the intelligent duplicate prevention mechanism. It now automatically strips dynamic tokens and timestamps from the tail of M3U8 URLs, targeting the main trunk for fuzzy matching. This completely immunizes the system against duplicate downloads caused by dynamic anti-leech mechanisms.
+
+---
 ### 🚀 V1.3.0 - 终极缝合引擎与体验闭环 | The Ultimate Muxing Engine & Experience Loop (2026.06.16)
 
 *本次更新在坚守“零臃肿”底线的前提下，赋予了 M-Fetch 处理外部碎片的降维打击能力。它现在不仅是一个纯粹的下载器，更是一个轻量级的流媒体本地处理中枢。*
