@@ -4,7 +4,7 @@
 """
 =============================================================================
 Project     : M-Fetch (极简 M3U8 下载器)
-Version     : 1.3.0
+Version     : 1.4.0
 Description : A minimalist, ad-free, bilingual M3U8 & Streaming downloader 
               GUI based on N_m3u8DL-RE and FFmpeg.
 Author      : Okqiyi (https://github.com/Nanobanana-AI/M-Fetch)
@@ -33,6 +33,43 @@ import pystray
 from PIL import Image
 
 # ==========================================
+# --- 新增：Windows 任务栏进度条底层接口 ---
+# ==========================================
+import ctypes
+from ctypes import wintypes
+try:
+    import comtypes.client
+    
+    # 定义任务栏进度条状态常量
+    TBPF_NOPROGRESS = 0
+    TBPF_INDETERMINATE = 1
+    TBPF_NORMAL = 2
+    TBPF_ERROR = 4
+    TBPF_PAUSED = 8
+
+    # 定义 ITaskbarList3 接口
+    class ITaskbarList3(comtypes.IUnknown):
+        _iid_ = comtypes.GUID('{ea1afb91-9e28-4b86-90e9-9e9f8a5eefaf}')
+        _methods_ = [
+            comtypes.COMMETHOD([], ctypes.HRESULT, 'HrInit'),
+            comtypes.COMMETHOD([], ctypes.HRESULT, 'AddTab', (['in'], wintypes.HWND, 'hwnd')),
+            comtypes.COMMETHOD([], ctypes.HRESULT, 'DeleteTab', (['in'], wintypes.HWND, 'hwnd')),
+            comtypes.COMMETHOD([], ctypes.HRESULT, 'ActivateTab', (['in'], wintypes.HWND, 'hwnd')),
+            comtypes.COMMETHOD([], ctypes.HRESULT, 'SetActiveAlt', (['in'], wintypes.HWND, 'hwnd')),
+            comtypes.COMMETHOD([], ctypes.HRESULT, 'MarkFullscreenWindow', (['in'], wintypes.HWND, 'hwnd'), (['in'], wintypes.BOOL, 'fFullscreen')),
+            comtypes.COMMETHOD([], ctypes.HRESULT, 'SetProgressValue', (['in'], wintypes.HWND, 'hwnd'), (['in'], ctypes.c_ulonglong, 'ullCompleted'), (['in'], ctypes.c_ulonglong, 'ullTotal')),
+            comtypes.COMMETHOD([], ctypes.HRESULT, 'SetProgressState', (['in'], wintypes.HWND, 'hwnd'), (['in'], ctypes.c_int, 'tbpFlags')),
+        ]
+    comtypes.CoInitialize()
+    taskbar = comtypes.client.CreateObject("{56FDF344-FD6D-11d0-958A-006097C9A090}", interface=ITaskbarList3)
+    taskbar.HrInit()
+    TASKBAR_AVAILABLE = True
+except Exception:
+    # 容错：如果系统不支持或没安装 comtypes，静默失败，不影响软件运行
+    TASKBAR_AVAILABLE = False
+    taskbar = None
+
+# ==========================================
 # --- 新增：双语字典与语言检测引擎 ---
 # ==========================================
 def get_sys_language():
@@ -55,7 +92,7 @@ LANG = get_sys_language()
 
 UI_TEXT = {
     'zh_CN': {
-        'title': "M-Fetch | 极简 M3U8 下载器 V1.3.0",
+        'title': "M-Fetch | 极简 M3U8 下载器 V1.4.0",
         'url_label': "下载地址:",
         'name_label': "保存文件:",
         'path_label': "保存路径:",
@@ -96,14 +133,17 @@ UI_TEXT = {
         'msg_restart': "语言设置已更改，请重启软件生效！\n(Language setting saved, please restart M-Fetch.)",
         'btn_reset': "恢复默认",
         'btn_save': "保存设置",
+        'btn_pause_all': "全部暂停 ",
+        'menu_pause': "⏸ 暂停下载",
+        'status_paused': "已暂停",
         'about_desc': (
             "本软件为纯粹的效率工具，基于 N_m3u8DL-RE 强力内核构建。\n"
             "主打极简、秒开、无感后台运行与批量断点续传。\n"
-            "【V1.3.0 核心升级】\n"
-            "新增合并外部TS文件夹，广告过滤、全局限速功能。\n"
+            "【V1.4.0 核心升级】\n"
+            "新增任务栏与托盘状态映射，内核同步升至 v0.6.0。\n"
             "如果您觉得这款工具为您节省了宝贵的时间，\n"
             "欢迎扫码请开发者喝杯咖啡 ☕ \n"
-            "2026年6月16日"
+            "2026年07月01日"
         ),
         'about_github': "👉 访问 GitHub 获取最新源码与完整更新日志",
         'about_site': "🌐 访问作者官网：okqiyi.com",
@@ -155,7 +195,7 @@ UI_TEXT = {
         )
     },
     'en_US': {
-        'title': "M-Fetch | Minimalist M3U8 Downloader V1.3.0",
+        'title': "M-Fetch | Minimalist M3U8 Downloader V1.4.0",
         'url_label': "Download URL:",
         'name_label': "File Name:",
         'path_label': "Save Path:",
@@ -196,14 +236,17 @@ UI_TEXT = {
         'msg_restart': "Language setting saved, please restart M-Fetch to take effect!",
         'btn_reset': "Reset Default",
         'btn_save': "Save Config",
+        'btn_pause_all': "Pause All ",
+        'menu_pause': "⏸ Pause",
+        'status_paused': "Paused",
         'about_desc': (
             "A minimalist, ad-free efficiency tool based on N_m3u8DL-RE.\n"
             "Features background running, batch downloading, and resumable tasks.\n"
-            "[V1.3.0 Core Updates]\n"
-            "Added 'Merge External TS', Ad Filter & Global Speed Limit.\n"
+            "[V1.4.0 Core Updates]\n"
+            "Added Taskbar & Tray status mapping; Core updated to v0.6.0.\n"
             "If this tool saved your precious time,\n"
             "consider buying the developer a coffee ☕ \n"
-            "June 16, 2026"
+            "July 01, 2026"
         ),
         'about_github': "👉 Visit GitHub for source code & updates",
         'about_site': "🌐 Official Website: okqiyi.com",
@@ -287,6 +330,11 @@ class M3U8TaskApp:
         
         self.last_clipboard = ""
         
+        
+        # --- 新增：进程与暂停追踪器 ---
+        self.active_processes = {}  # 记录正在运行的底层进程 {task_id: process}
+        self.paused_tasks = set()   # 记录被手动点击暂停的任务 ID
+        
         # 初始化目录和数据库
         self.init_env()
         
@@ -302,16 +350,31 @@ class M3U8TaskApp:
         # --- 新增：接管最小化按钮 (-) 和 关闭按钮 (X) ---
         self.root.bind("<Unmap>", self.on_unmap)
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
+                      
+              
+        # --- 优化后的获取主窗口 Windows 底层句柄 HWND ---
+        self.root.update_idletasks() # 确保窗口已在系统彻底渲染
+        try:
+            import ctypes
+            # 穿透 Tkinter 表层，直接向 Windows 强要最底层的真实窗口句柄
+            self.hwnd = ctypes.windll.user32.GetParent(self.root.winfo_id())
+        except Exception:
+            try:
+                self.hwnd = int(self.root.wm_frame(), 16) # 兜底方案
+            except Exception:
+                self.hwnd = None
         
         # 启动剪贴板监听
         self.monitor_clipboard()
         
         # --- 新增：定义当前版本并启动无感版本检测 ---
-        self.current_version = "v1.3.0"
+        self.current_version = "V1.4.0"
         self.check_for_updates()
         
         # --- 新增：接管最小化按钮 (-) 和 关闭按钮 (X) ---
         self.root.bind("<Unmap>", self.on_unmap)
+        
+        
         
     def get_system_proxy_url(self):
         """自动探测并获取 Windows 系统当前的代理地址"""
@@ -512,11 +575,16 @@ class M3U8TaskApp:
         # 1. 正在下载 Tab
         self.frame_dl = ttk.Frame(self.notebook)
         self.notebook.add(self.frame_dl, text=get_text('tab_dl'))
+        
+        # --- 修复：重新排版，缩小按钮并留出合理间距 ---
+        tk.Button(self.frame_dl, text=get_text('btn_start_all'), command=self.start_all_waiting).place(x=360, y=5, width=95, height=25)
+        tk.Button(self.frame_dl, text=get_text('btn_pause_all'), command=self.pause_all_active).place(x=475, y=5, width=95, height=25)
+        
         # 调整了宽度，新增了 "status" (状态) 列
         self.tree_dl = self.create_treeview(self.frame_dl, columns=("id", "name", "progress", "speed", "status"), 
                                             headings=(get_text('col_id'), get_text('col_name'), get_text('col_prog'), get_text('col_speed'), get_text('col_status')), widths=(40, 220, 80, 100, 80))
-        # 新增：全部开始按钮 (挂在表格上方)
-        tk.Button(self.frame_dl, text=get_text('btn_start_all'), command=self.start_all_waiting).place(x=460, y=5, width=110, height=25)
+        
+        
         # 绑定右键菜单：手动开始等待中的任务
         self.tree_dl.bind("<Button-3>", lambda e: self.show_context_menu(e, self.tree_dl, "dl"))
         # --- 新增：为下载列表绑定 Del 键 ---
@@ -760,13 +828,30 @@ class M3U8TaskApp:
             paypal_link.bind("<Button-1>", lambda e: webbrowser.open("https://www.paypal.com/paypalme/Okqiyi"))
             
     def start_all_waiting(self):
-        """一键把列表中所有 '等待中' 的任务推入下载队列"""
+        """一键把列表中所有 '等待中' 或 '已暂停' 的任务推入下载队列"""
         items = self.tree_dl.get_children()
         for iid in items:
             vals = self.tree_dl.item(iid, 'values')
-            # 判断第5列(索引4)是否为等待中
-            if vals[4] == get_text('status_wait'):  
-                self.resume_task(vals[0])        
+            if vals[4] in (get_text('status_wait'), get_text('status_paused')):  
+                self.resume_task(vals[0])
+
+    def pause_all_active(self):
+        """一键暂停所有正在干活的任务"""
+        items = self.tree_dl.get_children()
+        for iid in items:
+            vals = self.tree_dl.item(iid, 'values')
+            if vals[4] in (get_text('status_dl'), get_text('status_resume')):
+                self.pause_task(vals[0])
+
+    def pause_task(self, task_id):
+        """物理超度底层进程，实现纯净暂停"""
+        task_id = int(task_id)
+        if task_id in self.active_processes:
+            self.paused_tasks.add(task_id) # 打上被手动终结的标记
+            try:
+                self.active_processes[task_id].kill() # 拔掉网线，直接杀进程
+            except: 
+                pass     
             
     def choose_dir(self):
         """弹出选择文件夹对话框"""
@@ -861,7 +946,10 @@ class M3U8TaskApp:
             task_id, url, fname, spath, status, size, prog, speed = row
             if status == 0:  # 等待中
                 self.tree_dl.insert('', 'end', iid=task_id, values=(task_id, fname, "0%", "-", get_text('status_wait')))
+            elif status == 4:  # 新增：已暂停
+                self.tree_dl.insert('', 'end', iid=task_id, values=(task_id, fname, prog, "-", get_text('status_paused')))
             elif status == 2:  # 完成
+                
                 self.tree_ok.insert('', 'end', iid=task_id, values=(task_id, fname, size))
             elif status == 3:  # 失败
                 self.tree_fail.insert('', 'end', iid=task_id, values=(task_id, fname, get_text('status_fail')))
@@ -877,7 +965,12 @@ class M3U8TaskApp:
                 messagebox.showwarning(get_text('msg_tips'), get_text('msg_incomplete'))
             return
 
-        self.cursor.execute("SELECT id FROM tasks WHERE url=? AND status IN (0, 1, 2)", (url,))
+        # --- 核心修复：截取真正的 M3U8 主干路径，忽略 token 等动态参数 ---
+        clean_url = url.split('?')[0] 
+        
+        # 使用 LIKE 模糊匹配，只要数据库里存的链接主干和现在的长得一样，一律按重复处理
+        self.cursor.execute("SELECT id FROM tasks WHERE url LIKE ? AND status IN (0, 1, 2)", (clean_url + '%',))
+        
         if self.cursor.fetchone():
             self.cursor.execute("INSERT INTO tasks (url, filename, save_path, status, size, progress, speed) VALUES (?, ?, ?, 3, '', '0%', '0KB/s')", 
                                 (url, fname, spath))
@@ -1013,17 +1106,32 @@ class M3U8TaskApp:
                 universal_newlines=True # 处理 \r 更新进度
             )
 
-           # 解析实时进度和速度
-            for line in process.stdout:
-                prog_match = re.search(r'(\d+(?:\.\d+)?%)', line)
-                speed_match = re.search(r'([\d.]+\s*[kKmMgG][bB](?:/s|ps))', line)
-                
-                prog = prog_match.group(1) if prog_match else None
-                speed = speed_match.group(1) if speed_match else None
+            # --- 新增：把活着的进程句柄存起来 ---
+            self.active_processes[task_id] = process
 
+           # --- 终极黑科技：放弃按行读取，改用“碎肉机”按块读取，完美粉碎新版的死锁缓冲 ---
+            buffer = ""
+            while True:
+                # 每次强行抓取 32 个字符，不依赖任何换行符，只要有输出就立刻截获
+                chunk = process.stdout.read(32)
+                if not chunk:
+                    break
+                
+                buffer += chunk
+                
+                # 使用 findall 提取缓冲池里【最新】的所有进度和速度
+                prog_matches = re.findall(r'(\d+(?:\.\d+)?%)', buffer)
+                speed_matches = re.findall(r'([\d.]+[kKmMgG]?[bB]ps)', buffer, re.IGNORECASE)
+                
+                # 永远只取数组里的最后一个（即最新鲜的进度数据）
+                prog = prog_matches[-1] if prog_matches else None
+                speed = speed_matches[-1] if speed_matches else None
+                
                 if prog or speed:
-                    # 使用 root.after 确保 UI 线程安全更新
+                    # 瞬间推送到 UI 界面
                     self.root.after(0, self.update_tree_ui, task_id, prog, speed)
+                    # 核心细节：保留最后 20 个字符（防止把 13.5MBps 从中间切断漏判），其他的直接丢弃清空内存
+                    buffer = buffer[-20:]
 
             process.wait()
 
@@ -1043,12 +1151,86 @@ class M3U8TaskApp:
                 if prog: item_values[2] = prog
                 if speed: item_values[3] = speed
                 self.tree_dl.item(task_id, values=item_values)
+                
+            # --- 新增：顺便刷新任务栏进度条 ---
+            self.update_taskbar_progress()
         except:
             pass
-            
+     
+    def update_taskbar_progress(self):
+        """核心黑科技：实时汇总多任务平均进度，映射到 Windows 任务栏，并动态更新右下角托盘悬浮文字"""
+        try:
+            items = self.tree_dl.get_children()
+            valid_tasks = 0
+            total_prog = 0.0
+
+            if items:
+                for iid in items:
+                    vals = self.tree_dl.item(iid, 'values')
+                    status = vals[4]
+                    # 只统计正在下载或正在恢复的活跃任务
+                    if status in (get_text('status_dl'), get_text('status_resume')):
+                        prog_str = vals[2].replace('%', '').strip()
+                        try:
+                            total_prog += float(prog_str)
+                            valid_tasks += 1
+                        except ValueError:
+                            pass
+
+            # ==========================================
+            # 1. 动态更新右下角“系统托盘”的鼠标悬浮文字
+            # ==========================================
+            if hasattr(self, 'tray_icon') and self.tray_icon:
+                if valid_tasks > 0:
+                    # 如果有任务，鼠标放上去会显示具体有几个任务在干活
+                    self.tray_icon.title = f"M-Fetch: {valid_tasks} 个任务正在下载..."
+                else:
+                    # 空闲时恢复默认提示
+                    self.tray_icon.title = get_text('tray_hover')
+
+            # ==========================================
+            # 2. 映射大窗口的“任务栏”进度条 (修复卡死BUG)
+            # ==========================================
+            if TASKBAR_AVAILABLE and self.hwnd:
+                if valid_tasks > 0:
+                    avg_prog = int(total_prog / valid_tasks)
+                    taskbar.SetProgressState(self.hwnd, TBPF_NORMAL)
+                    taskbar.SetProgressValue(self.hwnd, avg_prog, 100)
+                else:
+                    # 【连招修复】：彻底治好 Windows 任务栏的重绘“懒癌”
+                    taskbar.SetProgressState(self.hwnd, TBPF_NORMAL)     # 1. 先唤醒它
+                    taskbar.SetProgressValue(self.hwnd, 0, 100)          # 2. 彻底抽干绿条
+                    taskbar.SetProgressState(self.hwnd, TBPF_NOPROGRESS) # 3. 彻底熄灭状态
+                    
+                    # 4. 踹系统一脚，强制刷新底层消息队列，立马生效不用等点击
+                    if hasattr(self, 'root'):
+                        self.root.update_idletasks()
+
+        except Exception:
+            pass
          
     def task_finished(self, task_id, filename, save_dir, is_success):
         """任务结束状态分发器 (引入终极物理验货机制，拒绝假成功)"""
+        # 清理已死亡的进程记录
+        self.active_processes.pop(task_id, None)
+
+        # ==========================================
+        # 新增拦截器：如果它是被我们手动杀掉的，就地转为暂停状态，不走失败逻辑
+        # ==========================================
+        if task_id in self.paused_tasks:
+            self.paused_tasks.remove(task_id)
+            self.cursor.execute("UPDATE tasks SET status=4 WHERE id=?", (task_id,)) # 数据库 4 代表暂停
+            self.conn.commit()
+            
+            if self.tree_dl.exists(task_id):
+                item_values = list(self.tree_dl.item(task_id, 'values'))
+                item_values[3] = "-" # 速度清零
+                item_values[4] = get_text('status_paused') # 状态变更为已暂停
+                self.tree_dl.item(task_id, values=item_values)
+            
+            self.update_taskbar_progress()
+            return # 核心：直接 return，阻止它被移到失败列表
+            
         try:
             if self.tree_dl.exists(task_id):
                 self.tree_dl.delete(task_id) # 从下载队列移除
@@ -1092,6 +1274,8 @@ class M3U8TaskApp:
             self.conn.commit()
             # 添加到失败列表 (用户可在该列表右键断点续传)
             self.tree_fail.insert('', 0, iid=task_id, values=(task_id, filename, get_text('status_verify_fail')))
+            # --- 新增：任务完成后重新计算任务栏总进度 ---
+        self.update_taskbar_progress()
 
     def clear_records(self, status):
         """独立清理指定的视图列表与数据库记录（坚决不删本地实际文件）"""
@@ -1131,7 +1315,10 @@ class M3U8TaskApp:
             self.conn.commit()
             
             # 2. 视觉清理：从当前 UI 列表中移除它
-            tree.delete(iid)           
+            tree.delete(iid)         
+            # --- 新增：如果你删除了下载中的任务，顺便刷新任务栏 ---
+        if tree == self.tree_dl:
+            self.update_taskbar_progress()
 
     def show_context_menu(self, event, tree, tree_type):
         """超级实用的右键菜单调度"""
@@ -1143,11 +1330,14 @@ class M3U8TaskApp:
         item_values = tree.item(iid, 'values')
         task_id = item_values[0]
 
-        if tree_type == "dl" and item_values[4] == get_text('status_wait'):
-            menu.add_command(label=get_text('menu_start'), command=lambda: self.resume_task(task_id))
-            
-        elif tree_type == "ok":
-            menu.add_command(label=get_text('menu_open_dir'), command=lambda: self.open_folder(task_id))
+        if tree_type == "dl":
+            status = item_values[4]
+            # 如果是等待或暂停，显示【开始】
+            if status in (get_text('status_wait'), get_text('status_paused')):
+                menu.add_command(label=get_text('menu_start'), command=lambda: self.resume_task(task_id))
+            # 如果是正在下载或恢复中，显示【暂停】
+            elif status in (get_text('status_dl'), get_text('status_resume')):
+                menu.add_command(label=get_text('menu_pause'), command=lambda: self.pause_task(task_id))
             
         elif tree_type == "fail":
             menu.add_command(label=get_text('menu_re_dl'), command=lambda: self.resume_task(task_id))
@@ -1168,6 +1358,9 @@ class M3U8TaskApp:
 
     def resume_task(self, task_id):
         """恢复/重新下载指定任务"""
+        # --- 核心修复：强制将 UI 传来的字符串 ID 转回整数，防止字典 Key 错乱 ---
+        task_id = int(task_id)
+        
         # 取出任务参数
         self.cursor.execute("SELECT url, filename, save_path FROM tasks WHERE id=?", (task_id,))
         row = self.cursor.fetchone()
@@ -1178,13 +1371,20 @@ class M3U8TaskApp:
         self.cursor.execute("UPDATE tasks SET status=1 WHERE id=?", (task_id,))
         self.conn.commit()
 
-        # 整理 UI：从失败中移除（如果在），加回下载中
+        # 整理 UI：从失败中移除（如果在），更新/加回下载中
         try:
-            if self.tree_fail.exists(task_id): self.tree_fail.delete(task_id)
-            if self.tree_dl.exists(task_id): self.tree_dl.delete(task_id)
+            if self.tree_fail.exists(task_id): 
+                self.tree_fail.delete(task_id)
         except: pass
         
-        self.tree_dl.insert('', 'end', iid=task_id, values=(task_id, fname, "0%", "-", get_text('status_resume')))
+        if self.tree_dl.exists(task_id):
+            # 如果它本来就在下载列表里（比如已暂停状态），原地复活
+            item_values = list(self.tree_dl.item(task_id, 'values'))
+            item_values[4] = get_text('status_resume')
+            self.tree_dl.item(task_id, values=item_values)
+        else:
+            # 否则从头新建一行
+            self.tree_dl.insert('', 'end', iid=task_id, values=(task_id, fname, "0%", "-", get_text('status_resume')))
         
         # 抛入线程池
         self.executor.submit(self.download_worker, task_id, url, fname, spath)
@@ -1285,7 +1485,7 @@ class M3U8TaskApp:
                     
                     if latest_version:
                         import re
-                        # 将字符串版本号转化为整数列表，例如 "v1.3.0" -> [1, 3, 0]
+                        # 将字符串版本号转化为整数列表，例如 "V1.4.0" -> [1, 3, 0]
                         def parse_version(v_str):
                             return [int(x) for x in re.findall(r'\d+', v_str)]
                             
