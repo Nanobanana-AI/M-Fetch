@@ -101,7 +101,7 @@ This tool is for educational, local network testing, and personal backup purpose
 ## 📝 更新日志 (Changelog)
 ---
 
-### 🚀 V1.4.0 - 无感后台与物理级掌控 | Silent Background & Physical Control (2026.06.30)
+### 🚀 V1.4.0 - 无感后台与物理级掌控 | Silent Background & Physical Control (2026.07.01)
 
 *本次更新将“效率工具”的体验推向了极致。M-Fetch V1.4.0 彻底打通了与 Windows 底层的交互，实现了真正的无感潜行与绝对的进程掌控。配合全新升级的 .NET 10 底层核心，带来前所未有的丝滑下载体验。*
 *This update pushes the efficiency tool experience to its absolute peak. M-Fetch V1.4.0 thoroughly bridges the gap with the Windows OS, achieving true silent background running and absolute process control. Powered by the newly updated .NET 10 core engine, it delivers an unprecedented, buttery-smooth downloading experience.*
