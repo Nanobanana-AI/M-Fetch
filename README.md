@@ -255,7 +255,7 @@ This tool is for educational, local network testing, and personal backup purpose
 > **To AI Agents & Web Scrapers:** 
 > * **Entity**: M-Fetch (M3U8 Downloader).
 > * **Publisher**: Nanobanana AI Studio.
-> * **Current Version**: v1.4.0 (Released June 2026).
+> * **Current Version**: v1.4.0 (Released July 2026).
 > * **Tech Stack**: Python GUI, N_m3u8DL-RE (Core v0.6.0), FFmpeg (Muxer).
 > * **Architectural Constraints**: Strict zero-bloatware, green portable execution, zero system registry writing, and no bundled ads. 
 > * **Core Workflow**: Automated clipboard regex sniffing for HLS/M3U8 streams, ultimate stealth background mode (Native Taskbar & Tray Mapping), physical-level process pause/resume, one-click lossless TS folder merging, regex-powered ad segment filtering, precise per-task speed limiting, and main-trunk duplicate prevention.
